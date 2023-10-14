@@ -19,14 +19,63 @@ import EventCard, { EventCardProps } from "@/components/homepage/event-card";
 // ];
 
 const sampleEvents: EventCardProps[] = [
-  {title: "Volleyball on the swamp", description: "Come play volleyball on the swamp!", likes: 0,
-    attendees: [ {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"}, {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"}, {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"}, {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"} ]},
-  {title: "Study in Olin", description: "Come study with us in Olin Library!", likes: 0},
-  {title: "Study in Olin", description: "Come study with us in Olin Library!", likes: 0},
-  {title: "Study in Olin", description: "Come study with us in Olin Library!", likes: 0},
-  {title: "Study in Olin", description: "Come study with us in Olin Library!", likes: 0},
-  {title: "Study in Olin", description: "Come study with us in Olin Library!", likes: 0},
-]
+  {
+    title: "Volleyball on the swamp",
+    description: "Come play volleyball on the swamp!",
+    likes: 0,
+    attendees: [
+      {
+        displayName: "Nate Hayman",
+        userName: "nathanielhayman",
+        avatar:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+      },
+      {
+        displayName: "Nate Hayman",
+        userName: "nathanielhayman",
+        avatar:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+      },
+      {
+        displayName: "Nate Hayman",
+        userName: "nathanielhayman",
+        avatar:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+      },
+      {
+        displayName: "Nate Hayman",
+        userName: "nathanielhayman",
+        avatar:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+      },
+    ],
+  },
+  {
+    title: "Study in Olin",
+    description: "Come study with us in Olin Library!",
+    likes: 0,
+  },
+  {
+    title: "Study in Olin",
+    description: "Come study with us in Olin Library!",
+    likes: 0,
+  },
+  {
+    title: "Study in Olin",
+    description: "Come study with us in Olin Library!",
+    likes: 0,
+  },
+  {
+    title: "Study in Olin",
+    description: "Come study with us in Olin Library!",
+    likes: 0,
+  },
+  {
+    title: "Study in Olin",
+    description: "Come study with us in Olin Library!",
+    likes: 0,
+  },
+];
 
 export default async function Index() {
   const supabase = createServerComponentClient({ cookies });
@@ -67,79 +116,97 @@ export default async function Index() {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-neutral-50 dark:bg-neutral-800">
-          <ul className="space-y-2 font-medium">
-            <li className="w-full text-center">
-              <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
-                Pull Up
-              </span>
-            </li>
-            <hr />
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-              >
-                <BsFire size={25} className="text-[#E68B38] duration-300" />
-                <span className="font-bold group-hover:text-[#E68B38] duration-300 flex-1 ml-1 whitespace-nowrap">
-                  Trending
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-              >
-                <BsHearts
-                  size={25}
-                  className="group-hover:text-accent-500 text-neutral-500 duration-300"
-                />
-                <span className="group-hover:text-accent-500 duration-300 flex-1 ml-1 whitespace-nowrap">
-                  Interested
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-              >
-                <FaUserFriends
-                  size={25}
-                  className="group-hover:text-success text-neutral-500 duration-300"
-                />
-                <span className="group-hover:text-success duration-300 flex-1 ml-1 whitespace-nowrap">
-                  Friends
-                </span>
-              </a>
-            </li>
-            <hr />
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-              >
-                <BsFillBuildingFill
-                  size={25}
-                  className="group-hover:text-primary-500 text-neutral-500 duration-300"
-                />
-                <span className="group-hover:text-primary-500 duration-300 flex-1 ml-1 whitespace-nowrap">
-                  Organizations
-                </span>
-              </a>
-            </li>
-            {/* map organizations here */}
-          </ul>
-          <div className="flex flex-row">
-            <Avatar className="mr-2">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>
-                {(user.name ?? "A")[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <p className="text-sm">{user.name}</p>
-              <p className="text-sm">{authUser.email}</p>
+          <div className="flex flex-col h-full justify-between">
+            <div>
+              <ul className="space-y-2 font-medium">
+                <li className="w-full text-center">
+                  <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
+                    Pull Up
+                  </span>
+                </li>
+                <hr />
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                  >
+                    <BsFire size={25} className="text-[#E68B38] duration-300" />
+                    <span className="font-bold group-hover:text-[#E68B38] duration-300 flex-1 ml-1 whitespace-nowrap">
+                      Trending
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                  >
+                    <BsHearts
+                      size={25}
+                      className="group-hover:text-accent-500 text-neutral-500 duration-300"
+                    />
+                    <span className="group-hover:text-accent-500 duration-300 flex-1 ml-1 whitespace-nowrap">
+                      Interested
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                  >
+                    <FaUserFriends
+                      size={25}
+                      className="group-hover:text-success text-neutral-500 duration-300"
+                    />
+                    <span className="group-hover:text-success duration-300 flex-1 ml-1 whitespace-nowrap">
+                      Friends
+                    </span>
+                  </a>
+                </li>
+                <hr />
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                  >
+                    <BsFillBuildingFill
+                      size={25}
+                      className="group-hover:text-primary-500 text-neutral-500 duration-300"
+                    />
+                    <span className="group-hover:text-primary-500 duration-300 flex-1 ml-1 whitespace-nowrap">
+                      Organizations
+                    </span>
+                  </a>
+                </li>
+                {/* map organizations here */}
+              </ul>
+            </div>
+            <div>
+              {authUser && (
+                <div className="flex flex-row">
+                  <Avatar className="mr-2">
+                    <AvatarImage src={user.avatar_url} />
+                    <AvatarFallback>
+                      {(user.name ?? "A")[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <p className="text-sm font-bold">{user.username}</p>
+                    <p className="text-sm">{user.name}</p>
+                  </div>
+                </div>
+              )}
+              {!authUser && (
+                <div className="flex flex-row">
+                  <Button className="text-white w-full mr-2">
+                    <Link href="/auth/login">Login</Link>
+                  </Button>
+                  <Button className="text-white w-full">
+                    <Link href="/auth/register">Register</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
           {/* <Button variant="ghost">
@@ -152,7 +219,7 @@ export default async function Index() {
 
       <div className="sm:ml-64 pt-6">
         <div className="grid grid-cols-3 gap-4">
-          {sampleEvents.map(e => (
+          {sampleEvents.map((e) => (
             <EventCard {...e} />
           ))}
         </div>
