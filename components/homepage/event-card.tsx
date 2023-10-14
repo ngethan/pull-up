@@ -52,18 +52,16 @@ function Button<T>(props: ButtonProps<T>) {
 
     return (
         <div className={`flex items-center justify-center space-x-2 rounded-lg p-2 
-            border border-solid cursor-pointer 
+            border border-solid cursor-pointer
             ${pressed 
                 ? `text-[#ffffff] bg-accent-500 hover:bg-none hover:text-accent-500 hover:border-accent-500`
                 
-                : `text-neutral-400 border-neutral-400 hover:text-[#ffffff] hover:bg-accent-500.
-                
-                primary}`}`}
+                : `text-neutral-400 border-neutral-400 hover:bg-accent-500 hover:text-[#fff] hover:border-accent-500 hover:shadow-md duration-300`}`}
         >
             <BsHearts
                 onClick={onPress}
             />
-            <span>I'm interested!</span>
+            <span className="text-sm">I'm interested!</span>
         </div>
     )
 }
@@ -77,13 +75,18 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
         <Card>
             <CardHeader className="space-y-0.5">
                 <div className="flex content-between space-x-4">
-                    <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
-                    <div className="flex mb-5 -space-x-4">
+                    <div className="flex flex-col">
+                        <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
+                        <p className="text-sm text-neutral-600">Organized by {props.organization}</p>
+                    </div>
+                    <div className="flex mb-5 -space-x-6">
                         {props.attendees?.filter((_, i) => i < 3).map(a => (
                             <img className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800" src={a.avatar} alt=""/>
                         ))}
                         {props.attendees && props.attendees.length > 3 && (
-                            <div className="w-10 h-10 border-2 border-white bg-white rounded-full" />
+                            <div className="w-10 h-10 border-2 border-white bg-white rounded-full align-middle">
+                                <p>+{props.attendees.length - 3}</p>
+                            </div>
                         )}
                     </div>
                 </div>
