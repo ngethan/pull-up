@@ -37,8 +37,15 @@ export default function Login() {
             <FormField
               control={form.control}
               name="register"
-              render={({ field }) => (
+              render={() => (
                 <div>
+                  <FormItem className="pb-[20px]">
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input name="name" type="name" placeholder="John Smith" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                   <FormItem className="pb-[20px]">
                     <FormLabel>Email</FormLabel>
                     <FormControl>

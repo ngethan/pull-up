@@ -3,12 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import React from "react";
+import { BsFire, BsFillBuildingFill, BsHearts } from "react-icons/bs";
+import { FaUserFriends } from "react-icons/fa";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const feeds: { title: string, href: string, description: string }[] = [
-  {title: "Trending", href: "/", description: "Trending events"},
-  {title: "Friends", href: "/friends", description: "Events from friends"},
-  {title: "Community", href: "/community", description: "Events from your communities"}
-]
+// const feeds: { title: string; href: string; description: string }[] = [
+//   { title: "Trending", href: "/", description: "Trending events" },
+//   { title: "Friends", href: "/friends", description: "Events from friends" },
+//   {
+//     title: "Community",
+//     href: "/community",
+//     description: "Events from your communities",
+//   },
+// ];
 
 
 const sampleEvents: EventCardProps[] = [
@@ -20,10 +27,10 @@ const sampleEvents: EventCardProps[] = [
 export default async function Index() {
   const supabase = createServerComponentClient({ cookies });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const authUser = (await supabase.auth.getUser()).data.user!;
+  const userId = authUser?.id;
+  const user = (await supabase.from("profiles").select().eq("id", userId))
+    .data![0];
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
