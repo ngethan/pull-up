@@ -2,11 +2,7 @@
 
 import Link from "next/link";
 import Messages from "./messages";
-import {
-  Card,
-  CardFooter,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Form,
