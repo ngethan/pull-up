@@ -79,12 +79,12 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
                 <div className="flex content-between space-x-4">
                     <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
                     <div className="flex mb-5 -space-x-4">
-                        {props.attendees?.map(a => (
-                            <Avatar>
-                                <AvatarImage src={a.avatar} />
-                                <AvatarFallback></AvatarFallback>
-                            </Avatar>
+                        {props.attendees?.filter((_, i) => i < 3).map(a => (
+                            <img className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800" src={a.avatar} alt=""/>
                         ))}
+                        {props.attendees && props.attendees.length > 3 && (
+                            <div className="w-10 h-10 border-2 border-white bg-white rounded-full" />
+                        )}
                     </div>
                 </div>
             </CardHeader>
