@@ -7,7 +7,7 @@ export interface BasicUser {
     displayName: string,
     userName: string,
     avatar: string,
-    bio: string
+    bio?: string
 }
 
 export interface BasicOrg {

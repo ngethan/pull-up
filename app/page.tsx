@@ -12,7 +12,8 @@ const feeds: { title: string, href: string, description: string }[] = [
 
 
 const sampleEvents: EventCardProps[] = [
-  {title: "Volleyball on the swamp", description: "Come play volleyball on the swamp!", likes: 0},
+  {title: "Volleyball on the swamp", description: "Come play volleyball on the swamp!", likes: 0,
+    attendees: [ {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"}, {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"}, {displayName: "Nate Hayman", userName: "nathanielhayman", "avatar": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images"} ]},
   {title: "Study in Olin", description: "Come study with us in Olin Library!", likes: 0}
 ]
 

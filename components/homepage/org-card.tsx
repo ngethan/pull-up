@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 import { BsHearts } from 'react-icons/bs';
 import { postAPI } from '../std';
-import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 
 
 export interface TagProps {
@@ -76,31 +75,22 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
     return (
         <Card>
             <CardHeader className="space-y-0.5">
-                <div className="flex content-between space-x-4">
-                    <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
-                    <div className="flex mb-5 -space-x-4">
-                        {props.attendees?.map(a => (
-                            <Avatar>
-                                <AvatarImage src={a.avatar} />
-                                <AvatarFallback></AvatarFallback>
-                            </Avatar>
-                        ))}
-                    </div>
-                </div>
+                <CardTitle className="text-lg font-bold">{props.title}</CardTitle>  
             </CardHeader>
             {/* <div className="h-[0.05rem] bg-neutral-300" /> */}
             <CardContent>
                     <>
                         <p className="text-sm text-muted-foreground">{props.description}</p>
+                        {props.attendees?.map(a => (
+                            <img src={a.avatar} alt=""/>
+                        ))}
                         {props.tags?.map(t => {
                             <Tag {...t}/>
                         })}
 
                         <p>Posted to</p>
                         
-                        <div className="flex space-x-2">
-                            <Button callback={likePost} />
-                        </div>
+                        <Button callback={likePost} />
                     </>
                 </CardContent>
         </Card>
