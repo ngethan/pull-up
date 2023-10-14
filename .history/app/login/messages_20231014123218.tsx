@@ -14,9 +14,11 @@ export default function Messages() {
         </p>
       )}
       {message && (
-        <p className="mt-4 p-4 rounded-lg bg-primary-500 text-white text-center">
-          {message}
-        </p>
+        <div>
+          <p className="mt-4 p-4 rounded-lg bg-primary-500 text-white text-center">
+            {message}
+          </p>
+        </div>
       )}
     </>
   );

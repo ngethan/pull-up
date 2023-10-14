@@ -1,3 +1,4 @@
+import Cursor from "@/components/Cursor";
 import "./globals.css";
 
 export const metadata = {
@@ -15,6 +16,7 @@ export default function RootLayout({
       <body>
         <main className="min-h-screen bg-background flex flex-col items-center">
           {children}
+          {/* <Cursor /> */}
         </main>
       </body>
     </html>
