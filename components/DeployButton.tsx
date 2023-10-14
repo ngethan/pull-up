@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 export default function DeployButton() {
   return (
@@ -21,5 +21,5 @@ export default function DeployButton() {
       </svg>
       Deploy to Vercel
     </a>
-  )
+  );
 }
