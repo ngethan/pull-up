@@ -4,7 +4,9 @@ import React from "react";
 import { BsFire, BsFillBuildingFill, BsHearts } from "react-icons/bs";
 import { FaUserFriends } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { TbLogout } from "react-icons/tb";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 // const feeds: { title: string; href: string; description: string }[] = [
 //   { title: "Trending", href: "/", description: "Trending events" },
 //   { title: "Friends", href: "/friends", description: "Events from friends" },
@@ -28,6 +30,7 @@ export default async function Index() {
   const userId = authUser?.id;
   const user = (await supabase.from("profiles").select().eq("id", userId))
     .data![0];
+
   return (
     <>
       <button
@@ -123,22 +126,26 @@ export default async function Index() {
             {/* map organizations here */}
           </ul>
           <div className="flex flex-row">
-            <Avatar>
+            <Avatar className="mr-2">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>
                 {(user.name ?? "A")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p>{user.name}</p>
-              <p>{authUser.email}</p>
+              <p className="text-sm">{user.name}</p>
+              <p className="text-sm">{authUser.email}</p>
             </div>
           </div>
+          {/* <Button variant="ghost">
+            <Link href="/auth/sign-out">
+              <TbLogout />
+            </Link>
+          </Button> */}
         </div>
       </aside>
 
       <div className="p-4 sm:ml-64">
-        {" "}
         {/* fix width issues here */}
         <div className="p-4 border-2 border-neutral-200 border-dashed rounded-lg dark:border-neutral-700">
           <div className="grid grid-cols-3 gap-4 mb-4">
