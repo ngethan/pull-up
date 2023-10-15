@@ -14,13 +14,14 @@ import {
   BsArrowUp,
   BsFillArrowUpSquareFill,
   BsFillSuitHeartFill,
+  BsHeart,
   BsHearts,
   BsPlusLg,
 } from "react-icons/bs";
 import { postAPI } from "../std";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
-
+import { FaPlus } from "react-icons/fa";
 export interface TagProps {
   title: string;
   tcolor: string;
@@ -135,7 +136,7 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
             variant="outline"
             onClick={() => handleInterested}
           >
-            <BsFillSuitHeartFill size={20} className="text-primary-500" />
+            <BsHeart size={20} className="text-primary-500" />
           </Button>
           <Button size="icon" variant="outline" onClick={() => handleJoin}>
             <BsPlusLg size={20} className="text-primary-500" />
