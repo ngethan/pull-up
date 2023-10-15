@@ -107,12 +107,14 @@ export default async function Index() {
     organizationData.push(o?.data?.[0]);
   }
 
-  const deleteEvent = (event: string) => {
-    (async () => {await deleteOneFromDB(supabase, "events", event)})();
+  const deleteEvent = async (event: string) => {
+    "use server";
+    await deleteOneFromDB(supabase, "events", event);
   }
 
-  const deleteOrg = (org: string) => {
-    (async () => {await deleteOneFromDB(supabase, "organizations", org)})();
+  const deleteOrg = async (org: string) => {
+    "use server";
+    await deleteOneFromDB(supabase, "organizations", org);
   }
 
   const getEventData: () => Promise<any> = async () => {
@@ -304,7 +306,12 @@ export default async function Index() {
         </div>
       </aside>
 
-      <GridDisplay eventData={eventData} userId={userId} />
+      <GridDisplay 
+        eventData={eventData} 
+        userId={userId} 
+        deleteEvent={deleteEvent}
+        deleteOrg={deleteOrg}
+      />
 
       </div>
     </>

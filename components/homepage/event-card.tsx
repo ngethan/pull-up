@@ -46,6 +46,7 @@ export interface EventCardProps {
   organization?: BasicOrg;
   tags?: TagProps[];
   attendees?: BasicUser[];
+  deleteEvent?: () => void;
 }
 
 export interface ButtonProps<T> {
