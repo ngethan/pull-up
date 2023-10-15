@@ -108,18 +108,22 @@ export default async function Index() {
   const getData: () => Promise<any> = async () => {
     return getAllFromDB(supabase, "events").then(async (d) => {
       return Promise.all(
-        d.map(async (event: { attendees: string[] }) => {
-          var parsed = await Promise.all(
+        d.map(async (event: any) => {
+          var parsedAttend = await Promise.all<any>(
             event.attendees.map((x: string) =>
               getOneFromDB(supabase, "profiles", x),
             ),
           );
 
-          parsed = parsed.map(x => x[0]);
+          var parsedOrganizer = await getOneFromDB(supabase, "profiles", event.organizer);
 
-          console.log(parsed.length);
+          parsedAttend = parsedAttend.map(x => x[0]);
+          parsedOrganizer = parsedOrganizer[0];
 
-          event.attendees = parsed;
+          console.log(parsedOrganizer);
+
+          event.attendees = parsedAttend;
+          event.organizer = parsedOrganizer;
 
           return event;
         }),
@@ -167,11 +171,11 @@ export default async function Index() {
           <div className="flex flex-col h-full justify-between">
             <div>
               <ul className="space-y-2 font-medium">
-                <li className="w-full text-center">
+                <li className="flex flex-row w-full">
                   <LogoSVG/>
-                  <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
+                  {/* <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
                     Pull Up
-                  </span>
+                  </span> */}
                 </li>
                 <hr />
                 <li>
@@ -296,13 +300,15 @@ export default async function Index() {
         </div> */}
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map((e: EventCardProps) => (
-            <EventCard {...e} />
+            <EventCard {...e} activeUser={userId} />
           ))}
+          <div className={data.length > 8 ? "absolute bottom-[2rem] right-[10rem]" : "w-full"}>
+            <PostButton />
+          </div>
         </div>
       </div>
 
       </div>
-      <PostButton />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { RiTreeLine, RiGraduationCapLine } from 'react-icons/ri';
 import { IoFastFoodOutline } from 'react-icons/io5';
 
 export interface BasicUser {
+    id: string,
     name: string,
     username: string,
     avatar_url: string,
