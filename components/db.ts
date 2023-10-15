@@ -61,3 +61,23 @@ export const deleteOneFromDB = (supabase: SupabaseClient<any, "public", any>, de
         resolve(true);
     });
 }
+
+export async function getAllFromDBWithMatch<T>(supabase: SupabaseClient<any, "public", any>, dest: string, param: string, value: T) {
+    "use server";
+    return new Promise<any>(async (resolve, reject) => {
+        const { data, error } = await supabase.from(dest).select().eq(param, value);
+        if (error)
+            reject(error);
+        resolve(data);
+    });
+}
+
+export async function getAllFromDBWithContains<T>(supabase: SupabaseClient<any, "public", any>, dest: string, param: string, value: T) {
+    "use server";
+    return new Promise<any>(async (resolve, reject) => {
+        const { data, error } = await supabase.from(dest).select().contains(param, [value]);
+        if (error)
+            reject(error);
+        resolve(data);
+    });
+}

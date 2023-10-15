@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EventCard, { EventCardProps } from "@/components/homepage/event-card";
 import PostButton from "@/components/PostButton";
-import { deleteOneFromDB, getAllFromDB, getOneFromDB } from "@/components/db";
+import { deleteOneFromDB, getAllFromDB, getAllFromDBWithMatch, getOneFromDB } from "@/components/db";
 import LogoSVG from './logo';
 import LargeLogoSVG from './large_logo';
 import GridDisplay from "@/components/homepage/grid-display";
@@ -117,30 +117,58 @@ export default async function Index() {
     await deleteOneFromDB(supabase, "organizations", org);
   }
 
-  const getEventData: () => Promise<any> = async () => {
-    return getAllFromDB(supabase, "events").then(async (d) => {
-      return Promise.all(
-        d.map(async (event: any) => {
-          var parsedAttend = await Promise.all<any>(
-            event.attendees.map((x: string) =>
-              getOneFromDB(supabase, "profiles", x),
-            ),
-          );
+  const unpackUsers = async (inp: any) => {
+    var parsed = await Promise.all<any>(
+      inp.map((x: string) =>
+        getOneFromDB(supabase, "profiles", x),
+      ),
+    );
 
-          var parsedOrganizer = await getOneFromDB(supabase, "profiles", event.organizer);
+    return parsed.map(x => x[0]);
+  };
 
-          parsedAttend = parsedAttend.map(x => x[0]);
+  const parseCards = async (d: any, dest: string) => {
+    return Promise.all(
+      d.map(async (elm: any) => {
+        if (dest == "organizations") {
+          var parsedOrganizer = await getOneFromDB(supabase, "profiles", elm.organizer);
           parsedOrganizer = parsedOrganizer[0];
 
-          console.log(parsedOrganizer);
+          elm.attendees = await unpackUsers(elm.attendees);
+          elm.organizer = parsedOrganizer;
 
-          event.attendees = parsedAttend;
-          event.organizer = parsedOrganizer;
+          return elm;
+        } else if (dest == "events") {
+          var parsedOwner = await getOneFromDB(supabase, "profiles", elm.owner);
+          parsedOwner = parsedOwner[0];
 
-          return event;
-        }),
-      );
+          elm.members = await unpackUsers(elm.members);
+          elm.owner = parsedOwner;
+
+          return elm;
+        }
+      })
+    )
+  }
+
+  const getEventData: () => Promise<any> = async () => {
+    return getAllFromDB(supabase, "events").then(async (d) => {
+      return parseCards(d, "events");
     });
+  }
+
+  const getDataByMatch: <T extends unknown>(dest: string, param: string, value: T) => Promise<any[]> 
+          = async <T extends unknown>(dest: string, param: string, value: T) => {
+    return getAllFromDBWithMatch(supabase, dest, param, value).then(async (d) => {
+      return parseCards(d, dest);
+    })
+  };
+
+  const getDataByContains: <T extends unknown>(dest: string, param: string, value: T) => Promise<any[]> 
+          = async <T extends unknown>(dest: string, param: string, value: T) => {
+    return getAllFromDBWithMatch(supabase, dest, param, value).then(async (d) => {
+      return parseCards(d, dest);
+    })
   };
 
   const eventData = await getEventData();
@@ -308,9 +336,10 @@ export default async function Index() {
 
       <GridDisplay 
         eventData={eventData} 
-        userId={userId} 
-        deleteEvent={deleteEvent}
-        deleteOrg={deleteOrg}
+        userId={userId}
+        content={"events"}
+        getDataByMatch={getDataByMatch}
+        getDataByContains={getDataByContains}
       />
 
       </div>

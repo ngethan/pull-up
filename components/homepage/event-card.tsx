@@ -27,6 +27,7 @@ import { Form } from "../ui/form";
 import { BiEditAlt } from "react-icons/bi";
 import { MdOutlineDriveFileMove } from 'react-icons/md';
 export interface TagProps {
+    id: string;
   title: string;
   tcolor: string;
   bgcolor: string;
@@ -37,7 +38,7 @@ export interface TagProps {
 
 export interface EventCardProps {
     activeUser: string,
-    uuid: string,
+    id: string,
   title: string;
   organizer: BasicUser;
   likes: number;
@@ -56,7 +57,7 @@ export interface ButtonProps<T> {
   callback?: (pressed: boolean) => T;
 }
 
-const Tag: React.FunctionComponent<TagProps> = (props) => (
+export const Tag: React.FunctionComponent<TagProps> = (props) => (
   <div className={`h-2 bg-${props.bgcolor} hover:bg-${props.hcolor}`}>
     <>
       {SVGList[props.icon]}
@@ -150,7 +151,7 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
 
   return (
         <Card 
-            key={props.uuid}
+            key={props.id}
             className={`relative mx-auto w-full cursor-pointer duration-300 hover:-translate-y-[7px] ${expanded ? `row-span-2` : ""}`}
             onClick={handleCardPress}
             onMouseEnter={() => setHovered(true)}
