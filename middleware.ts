@@ -13,6 +13,21 @@ export async function middleware(req: NextRequest) {
 
   // if user hasn't engaged in setup process yet, redirect them to setup page
   if (
+    (await supabase.auth.getUser()) !== null &&
+    (await supabase
+      .from("profiles")
+      .select()
+      .eq("id", await supabase.auth.getUser())) !== null &&
+    (
+      await supabase
+        .from("profiles")
+        .select()
+        .eq("id", await supabase.auth.getUser())
+    ).data !== null &&
+    (await supabase
+      .from("profiles")
+      .select()
+      .eq("id", await supabase.auth.getUser()))!.data!.length > 0 &&
     ((
       await supabase
         .from("profiles")
@@ -21,11 +36,12 @@ export async function middleware(req: NextRequest) {
     )?.data)![0].username === null &&
     !pathname.startsWith("/setup")
   ) {
+    console.log("a");
     return NextResponse.redirect(new URL("/setup", req.url));
   }
 
   if (
-    (await supabase.auth.getSession()) !== null &&
+    (await supabase.auth.getUser()).data.user !== null &&
     (pathname.startsWith("/login") || pathname.startsWith("/register"))
   ) {
     return NextResponse.redirect(new URL("/", req.url));

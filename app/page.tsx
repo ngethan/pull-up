@@ -1,6 +1,6 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BsFire, BsFillBuildingFill, BsHearts } from "react-icons/bs";
 import { BiSolidCity } from "react-icons/bi";
 import { FaUserFriends } from "react-icons/fa";
@@ -10,14 +10,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EventCard, { EventCardProps } from "@/components/homepage/event-card";
 import PostButton from "@/components/PostButton";
-import { Dialog, DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import {
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@radix-ui/react-dialog";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "@/components/ui/input";
 import { getAllFromDB, getOneFromDB } from "@/components/db";
 // const feeds: { title: string; href: string; description: string }[] = [
 //   { title: "Trending", href: "/", description: "Trending events" },
@@ -112,19 +104,24 @@ export default async function Index() {
   }
 
   const getData: () => Promise<any> = async () => {
-    return getAllFromDB(supabase, "events")
-      .then(async d => {
-        return Promise.all(d.map(async (event: {attendees: string[]}) => {
-          const parsed = await Promise.all(event.attendees.map((x: string)=>getOneFromDB(supabase, "profiles", x)));
+    return getAllFromDB(supabase, "events").then(async (d) => {
+      return Promise.all(
+        d.map(async (event: { attendees: string[] }) => {
+          const parsed = await Promise.all(
+            event.attendees.map((x: string) =>
+              getOneFromDB(supabase, "profiles", x),
+            ),
+          );
 
           console.log(parsed.length);
 
           event.attendees = parsed;
 
           return event;
-        }));
-      });
-  }
+        }),
+      );
+    });
+  };
 
   const data = await getData();
 
@@ -244,38 +241,43 @@ export default async function Index() {
                   : ""}
               </ul>
             </div>
-            <div>
+            <div className="bg-neutral-200/80 rounded-lg p-2">
               {authUser && (
-                <div className="flex flex-row">
-                  <Avatar className="mr-2">
-                    <AvatarImage src={user.avatar_url} />
-                    <AvatarFallback>
-                      {(user.name ?? "A")[0].toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-bold">{user.username}</p>
-                    <p className="text-sm">{user.name}</p>
+                <div className="flex flex-row justify-between w-full">
+                  <div className="flex flex-row">
+                    <Avatar className="mr-2">
+                      <AvatarImage src={user.avatar_url} />
+                      <AvatarFallback>
+                        {(user.name ?? "A")[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-bold">{user.username}</p>
+                      <p className="text-sm">{user.name}</p>
+                    </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    className="hover:text-primary-500 duration-300"
+                  >
+                    <Link href="/auth/sign-out">
+                      <TbLogout size={20} />
+                    </Link>
+                  </Button>
                 </div>
               )}
               {!authUser && (
                 <div className="flex flex-row">
                   <Button className="text-white w-full mr-2">
-                    <Link href="/auth/login">Login</Link>
+                    <Link href="/login">Login</Link>
                   </Button>
                   <Button className="text-white w-full">
-                    <Link href="/auth/register">Register</Link>
+                    <Link href="/register">Register</Link>
                   </Button>
                 </div>
               )}
             </div>
           </div>
-          {/* <Button variant="ghost">
-              <Link href="/auth/sign-out">
-                <TbLogout />
-              </Link>
-            </Button> */}
         </div>
       </aside>
 
@@ -286,7 +288,7 @@ export default async function Index() {
           ))}
         </div> */}
         <div className="grid grid-cols-3 gap-4">
-          {data.map((e:EventCardProps) => (
+          {data.map((e: EventCardProps) => (
             <EventCard {...e} />
           ))}
         </div>
