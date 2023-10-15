@@ -61,7 +61,7 @@ export default function Login() {
               )}
             />
             <Button
-              formAction="auth/sign-in"
+              formAction="/auth/sign-in"
               type="submit"
               className="w-full text-white"
             >

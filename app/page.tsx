@@ -209,9 +209,13 @@ export default async function Index() {
             ),
           );
 
-          var parsedOrganizer = await getOneFromDB(supabase, "profiles", event.organizer);
+          var parsedOrganizer = await getOneFromDB(
+            supabase,
+            "profiles",
+            event.organizer,
+          );
 
-          parsedAttend = parsedAttend.map(x => x[0]);
+          parsedAttend = parsedAttend.map((x) => x[0]);
           parsedOrganizer = parsedOrganizer[0];
 
           console.log(parsedOrganizer);
@@ -317,7 +321,7 @@ export default async function Index() {
                         className="text-[#E68B38] duration-300"
                       />
                       <span className="font-bold group-hover:text-[#E68B38] duration-300 flex-1 ml-1 whitespace-nowrap">
-                        what's UP
+                        Trending
                       </span>
                     </a>
                   </li>
