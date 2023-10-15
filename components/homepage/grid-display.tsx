@@ -13,12 +13,6 @@ export interface GridDisplayParams {
   tags?: TagProps[];
   userId: string;
   content: string;
-  getDataByMatch: (dest: string, param: string, value: any) => Promise<any[]>;
-  getDataByContains: (
-    dest: string,
-    param: string,
-    value: any,
-  ) => Promise<any[]>;
 }
 
 const GridDisplay: React.FunctionComponent<GridDisplayParams> = (props) => {
@@ -27,9 +21,9 @@ const GridDisplay: React.FunctionComponent<GridDisplayParams> = (props) => {
   const [orgData, setOrgData] = useState(props.orgData);
 
   const handleFilterChange = async (t: TagProps) => {
-    if (content == "events")
-      setEventData(await props.getDataByContains(content, "tags", t.id));
-    else setOrgData(await props.getDataByContains(content, "tags", t.id));
+    // if (content == "events")
+    //   setEventData(await props.getDataByContains(content, "tags", t.id));
+    // else setOrgData(await props.getDataByContains(content, "tags", t.id));
   };
 
   console.log(props.userId);

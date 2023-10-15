@@ -398,8 +398,6 @@ export default async function Index() {
           eventData={eventData}
           userId={userId}
           content={"events"}
-          getDataByMatch={getDataByMatch}
-          getDataByContains={getDataByContains}
         />
       </div>
     </>

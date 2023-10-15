@@ -45,7 +45,6 @@ export interface OrgCardProps {
   description?: string;
   events?: string[];
   tags?: TagProps[];
-  deleteOrg?: (id: string) => void;
 }
 
 export interface ButtonProps<T> {
