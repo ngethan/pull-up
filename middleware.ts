@@ -11,62 +11,42 @@ export async function middleware(req: NextRequest) {
   // Create a Supabase client configured to use cookies
   const supabase = createMiddlewareClient({ req, res });
 
+  if (pathname === "/auth/sign-out") return;
+
   // if user hasn't setup name yet, redirect them to setup page
   if (
-    (await supabase.auth.getUser()) !== null &&
-    (await supabase
-      .from("profiles")
-      .select()
-      .eq("id", await supabase.auth.getUser())) !== null &&
+    (await supabase.auth.getUser()).data.user !== null &&
     (
       await supabase
         .from("profiles")
         .select()
-        .eq("id", await supabase.auth.getUser())
+        .eq("id", (await supabase.auth.getUser()).data.user?.id)
     ).data !== null &&
     (await supabase
       .from("profiles")
       .select()
-      .eq("id", await supabase.auth.getUser()))!.data!.length > 0 &&
-    ((
+      .eq("id", (await supabase.auth.getUser()).data.user?.id))!.data!.length >
+      0
+  ) {
+    const userProfile = (
       await supabase
         .from("profiles")
         .select()
         .eq("id", (await supabase.auth.getUser()).data.user?.id)
-    )?.data)![0].username === null &&
-    !pathname.startsWith("/setup-name")
-  ) {
-    return NextResponse.redirect(new URL("/setup-name", req.url));
+    ).data![0];
+    if (
+      userProfile.username === null &&
+      !pathname.startsWith("/setup-username")
+    ) {
+      return NextResponse.redirect(new URL("/setup-username", req.url));
+    } else if (
+      (userProfile.tags === null || userProfile.tags.length === 0) &&
+      !pathname.startsWith("/setup-tags") &&
+      !pathname.startsWith("/setup-username")
+    ) {
+      return NextResponse.redirect(new URL("/setup-tags", req.url));
+    }
   }
-
-  // if user hasn't setup tags yet
-  // if (
-  //   (await supabase.auth.getUser()) !== null &&
-  //   (await supabase
-  //     .from("profiles")
-  //     .select()
-  //     .eq("id", await supabase.auth.getUser())) !== null &&
-  //   (
-  //     await supabase
-  //       .from("profiles")
-  //       .select()
-  //       .eq("id", await supabase.auth.getUser())
-  //   ).data !== null &&
-  //   (await supabase
-  //     .from("profiles")
-  //     .select()
-  //     .eq("id", await supabase.auth.getUser()))!.data!.length > 0 &&
-  //   ((
-  //     await supabase
-  //       .from("profiles")
-  //       .select()
-  //       .eq("id", (await supabase.auth.getUser()).data.user?.id)
-  //   )?.data)![0].tags === null &&
-  //   !pathname.startsWith("/setup-name")
-  // ) {
-  //   console.log("c");
-  //   return NextResponse.redirect(new URL("/setup-tags", req.url));
-  // }
 
   if (
     (await supabase.auth.getUser()).data.user !== null &&
@@ -80,3 +60,7 @@ export async function middleware(req: NextRequest) {
 
   return res;
 }
+
+export const config = {
+  matcher: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+};

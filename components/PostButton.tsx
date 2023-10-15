@@ -13,8 +13,15 @@ import {
 import { DialogFooter, DialogHeader } from "./ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { ChevronDownIcon } from "lucide-react";
+
+import { useForm } from "react-hook-form";
 
 const PostButton = () => {
+  const form = useForm();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -27,31 +34,40 @@ const PostButton = () => {
         <DialogHeader>
           <DialogTitle>Post Up!</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Create a new post here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
+        <Form {...form}>
+          <form
+            className="space-y-8 mb-[30px]"
+            action="/auth/sign-in"
+            method="post"
+          >
+            <div className="grid gap-4 py-4">
+              <FormItem className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="title" className="text-right">
+                  Title
+                </Label>
+                <Input
+                  id="title"
+                  defaultValue=""
+                  className="col-span-3"
+                />
+              </FormItem>
+              <FormItem className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Description
+                </Label>
+                <Textarea
+                  id="description"
+                  placeholder="Describe your event!"
+                  defaultValue=""
+                  className="col-span-3"
+                />
+              </FormItem>
+            </div>
+          </form>
+        </Form>
         <DialogFooter>
           <Button type="submit">Save changes</Button>
         </DialogFooter>

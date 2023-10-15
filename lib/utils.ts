@@ -1,3 +1,4 @@
+import { SupabaseClient } from "@supabase/supabase-js";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 

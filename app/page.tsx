@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EventCard, { EventCardProps } from "@/components/homepage/event-card";
 import PostButton from "@/components/PostButton";
-import { getAllFromDB, getOneFromDB } from "@/components/db";
-import LogoSVG from './logo'
+import { deleteOneFromDB, getAllFromDB, getOneFromDB } from "@/components/db";
+import LogoSVG from './logo';
+import LargeLogoSVG from './large_logo';
+import GridDisplay from "@/components/homepage/grid-display";
 
 // const feeds: { title: string; href: string; description: string }[] = [
 //   { title: "Trending", href: "/", description: "Trending events" },
@@ -105,7 +107,15 @@ export default async function Index() {
     organizationData.push(o?.data?.[0]);
   }
 
-  const getData: () => Promise<any> = async () => {
+  const deleteEvent = (event: string) => {
+    (async () => {await deleteOneFromDB(supabase, "events", event)})();
+  }
+
+  const deleteOrg = (org: string) => {
+    (async () => {await deleteOneFromDB(supabase, "organizations", org)})();
+  }
+
+  const getEventData: () => Promise<any> = async () => {
     return getAllFromDB(supabase, "events").then(async (d) => {
       return Promise.all(
         d.map(async (event: any) => {
@@ -131,7 +141,7 @@ export default async function Index() {
     });
   };
 
-  const data = await getData();
+  const eventData = await getEventData();
 
   // console.log(data[0].attendees);
 
@@ -172,7 +182,9 @@ export default async function Index() {
             <div>
               <ul className="space-y-2 font-medium">
                 <li className="flex flex-row w-full">
+                  
                   <LogoSVG/>
+                  {/* <LargeLogoSVG/> */}
                   {/* <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
                     Pull Up
                   </span> */}
@@ -292,21 +304,7 @@ export default async function Index() {
         </div>
       </aside>
 
-      <div className="sm:ml-64 pt-6 w-full p-10">
-        {/* <div className="grid grid-cols-3 gap-4">
-          {sampleEvents.map((e) => (
-            <EventCard {...e} />
-          ))}
-        </div> */}
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data.map((e: EventCardProps) => (
-            <EventCard {...e} activeUser={userId} />
-          ))}
-          <div className={data.length > 8 ? "absolute bottom-[2rem] right-[10rem]" : "w-full"}>
-            <PostButton />
-          </div>
-        </div>
-      </div>
+      <GridDisplay eventData={eventData} userId={userId} />
 
       </div>
     </>

@@ -50,7 +50,8 @@ export interface EventCardProps {
 
 export interface ButtonProps<T> {
     children: ReactNode;
-    className?: string,
+    toggleable?: boolean;
+    className?: string;
   callback?: (pressed: boolean) => T;
 }
 
@@ -67,12 +68,14 @@ function CustomButton<T>(props: ButtonProps<T>) {
   const [pressed, setPressed] = useState(false);
 
   const onPress = () => {
-    setPressed(!pressed);
     props.callback!(!pressed);
+    if (props.toggleable)
+        setPressed(!pressed);
   };
 
   return (
     <a
+        onClick={onPress}
       className={`flex items-center justify-center space-x-2 rounded-md p-2
             border border-solid cursor-pointer
             ${
@@ -82,7 +85,7 @@ function CustomButton<T>(props: ButtonProps<T>) {
             } ${props.className}`}
     >
         {props.children}
-      {/* <BsHearts onClick={onPress} /> */}
+      {/* <BsHearts  /> */}
       {/* <span className="text-sm">Read More</span> */}
     </a>
   );
@@ -109,16 +112,24 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
         }
     }, []);
 
-  const likePost = (liked: boolean) => {
-    postAPI("/like-event", { id: "", value: liked });
-  };
-
   const handleInterested = (e: Event) => {
     console.log(e);
   };
 
   const handleJoin = (e: Event) => {
     console.log(e);
+  };
+
+  const handleEdit = () => {
+
+  };
+
+  const handleDelete = () => {
+
+  };
+
+  const handleMove = () => {
+
   };
 
   const handleCardPress = () => {
@@ -206,13 +217,22 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
         </CardFooter>
         { hovered && 
             <div className="flex absolute bottom-0 left-[2rem]">
-                <CustomButton className="rounded-none rounded-tl-md">
+                <CustomButton 
+                    className="rounded-none rounded-tl-md"
+                    callback={() => handleEdit}
+                >
                     <BiEditAlt size={18} />
                 </CustomButton>
-                <CustomButton className="rounded-none border-l-[1px]">
+                <CustomButton 
+                    className="rounded-none border-l-[1px]"
+                    callback={() => handleDelete}
+                >
                     <BsTrash size={18} />
                 </CustomButton>
-                <CustomButton className="rounded-none rounded-tr-md">
+                <CustomButton 
+                    className="rounded-none rounded-tr-md"
+                    callback={() => handleMove}
+                >
                     <MdOutlineDriveFileMove size={18} />
                 </CustomButton>
             </div>
