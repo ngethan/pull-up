@@ -128,7 +128,7 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
           })}
         </>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="float-right">
         <div className="flex space-x-2">
           <Button size="icon" onClick={() => handleInterested}>
             <BsFillSuitHeartFill size={25} className="text-neutral-50" />
