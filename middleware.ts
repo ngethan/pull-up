@@ -11,7 +11,7 @@ export async function middleware(req: NextRequest) {
   // Create a Supabase client configured to use cookies
   const supabase = createMiddlewareClient({ req, res });
 
-  // if user hasn't engaged in setup process yet, redirect them to setup page
+  // if user hasn't setup name yet, redirect them to setup page
   if (
     (await supabase.auth.getUser()) !== null &&
     (await supabase
@@ -34,11 +34,39 @@ export async function middleware(req: NextRequest) {
         .select()
         .eq("id", (await supabase.auth.getUser()).data.user?.id)
     )?.data)![0].username === null &&
-    !pathname.startsWith("/setup")
+    !pathname.startsWith("/setup-name")
   ) {
-    console.log("a");
-    return NextResponse.redirect(new URL("/setup", req.url));
+    return NextResponse.redirect(new URL("/setup-name", req.url));
   }
+
+  // if user hasn't setup tags yet
+  // if (
+  //   (await supabase.auth.getUser()) !== null &&
+  //   (await supabase
+  //     .from("profiles")
+  //     .select()
+  //     .eq("id", await supabase.auth.getUser())) !== null &&
+  //   (
+  //     await supabase
+  //       .from("profiles")
+  //       .select()
+  //       .eq("id", await supabase.auth.getUser())
+  //   ).data !== null &&
+  //   (await supabase
+  //     .from("profiles")
+  //     .select()
+  //     .eq("id", await supabase.auth.getUser()))!.data!.length > 0 &&
+  //   ((
+  //     await supabase
+  //       .from("profiles")
+  //       .select()
+  //       .eq("id", (await supabase.auth.getUser()).data.user?.id)
+  //   )?.data)![0].tags === null &&
+  //   !pathname.startsWith("/setup-name")
+  // ) {
+  //   console.log("c");
+  //   return NextResponse.redirect(new URL("/setup-tags", req.url));
+  // }
 
   if (
     (await supabase.auth.getUser()).data.user !== null &&
