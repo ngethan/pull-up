@@ -6,7 +6,7 @@ import { IoFastFoodOutline } from 'react-icons/io5';
 export interface BasicUser {
     displayName: string,
     userName: string,
-    avatar: string,
+    avatar_url: string,
     bio?: string
 }
 

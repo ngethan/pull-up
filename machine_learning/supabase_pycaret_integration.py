@@ -1,6 +1,7 @@
 # Import necessary libraries
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import numpy as np
 from supabase_py import create_client, Client
 from collections import defaultdict
 from multiprocessing import Pool
@@ -31,9 +32,18 @@ def update_user_in_supabase(supabase, user_id, updated_data):
         print(f"Successfully updated user {user_id}")
         return True
 
-# Placeholder function for Drew's ML logic--------------------------------------------------------------------
-def compute_event_score(user_row, event_row):
+def fetch_profile_by_id(supabase, profile_id):
+    rows = supabase.table("profiles").select("*").eq("id", profile_id).execute()
+    if rows['data']:
+        return pd.DataFrame(rows['data']).iloc[0]  # Assuming IDs are unique, so only one row should match
+    else:
+        print(f"No profile found with ID {profile_id}")
+        return None
 
+# Placeholder function for Drew's ML logic --------------------------------------------------------------------
+def compute_event_score(profile_id, event_row):
+
+    np.array()
     model= LinearRegression()
     import random
     return random.random()
@@ -69,12 +79,15 @@ def rank_events_for_users(data_profiles, data_events):
     for user_id in user_event_scores.keys():
         top_event_id = max(user_event_scores[user_id], key=user_event_scores[user_id].get)
         update_user_in_supabase(supabase, user_id, {'top_event_id': top_event_id})
-    
-    return user_event_scores
-
+        return user_event_scores
 # Fetch data
 data_events = fetch_and_convert_to_dataframe(supabase, "events")
-data_profiles = fetch_and_convert_to_dataframe(supabase, "profiles")
+#data_profiles = fetch_and_convert_to_dataframe(supabase, "profiles")
+
+np_events=data_events.to_numpy()
+
+ml_vars_np=np.zeros((np_events.shape[1],52))
+
 
 # Rank events for users
 if data_events is not None and data_profiles is not None:
