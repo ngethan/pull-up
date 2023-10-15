@@ -177,7 +177,7 @@ export default async function Index() {
                     Pull Up
                   </span> */}
                 </li>
-                <hr />
+                <hr/>
                 <li>
                   <a
                     href="#"
@@ -185,7 +185,7 @@ export default async function Index() {
                   >
                     <BsFire size={25} className="text-[#E68B38] duration-300" />
                     <span className="font-bold group-hover:text-[#E68B38] duration-300 flex-1 ml-1 whitespace-nowrap">
-                      Trending
+                      what's UP
                     </span>
                   </a>
                 </li>

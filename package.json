@@ -20,8 +20,8 @@
     "next": "latest",
     "postcss": "8.4.29",
     "prettier": "^3.0.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
     "tailwind-merge": "^1.14.0",
@@ -32,10 +32,15 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/plugin-transform-runtime": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-typescript": "^7.23.2",
     "@types/next": "^9.0.0",
     "@types/node": "20.3.1",
-    "@types/react": "18.2.12",
-    "@types/react-dom": "18.2.5",
+    "@types/react": "^18.2.12",
+    "@types/react-dom": "^18.2.5",
     "@types/zxcvbn": "^4.4.2",
     "encoding": "^0.1.13"
   }
