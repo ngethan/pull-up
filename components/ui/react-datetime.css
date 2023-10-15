@@ -214,8 +214,6 @@ td.rdtYear:hover {
 }
 
 .form-control {
-  width: 100%;
   border-radius: 0.5rem;
-  padding-x: 8px;
-  padding-y: 12px;
+  padding: 8px 12px;
 }
