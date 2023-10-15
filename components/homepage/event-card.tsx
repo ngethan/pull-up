@@ -40,6 +40,7 @@ export interface EventCardProps {
     activeUser: string,
     id: string,
   title: string;
+  created_at: Date;
   organizer: BasicUser;
   likes: number;
   description?: string;
@@ -139,6 +140,8 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
         setExpanded(!expanded);
   }
 
+  const created_at = new Date(props.created_at);
+
 //   console.log(props.attendees);
 
 //   useEffect(() => {
@@ -161,12 +164,14 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
             <div className="flex justify-between">
             <div className="flex flex-col">
                 <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
-                <p className="text-sm text-neutral-600">
-                Organized by <a 
-                        className="text-primary-900 text-bold"
-                        href={`/u/${props.organizer?.username}`}>{props.organizer?.name}
-                    </a>
-                </p>
+                <div className="flex justify-between">
+                    <p className="text-sm text-neutral-600">
+                    Organized by <a 
+                            className="text-primary-900 text-bold"
+                            href={`/u/${props.organizer?.username}`}>{props.organizer?.name}
+                        </a>
+                    </p>
+                </div>
             </div>
             <div className="flex mb-5 -space-x-6">
                 {props.attendees
@@ -202,19 +207,22 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
             })}
             </>
         </CardContent>
-        <CardFooter className="float-right">
-            <div className="flex space-x-2">
-            <CustomButton
-                callback={() => handleInterested}
-            >
-                <BsHeart size={20} />
-            </CustomButton>
-            <CustomButton
-                callback={() => handleJoin}
-            >
-                <BsPlusLg size={20} />
-            </CustomButton>
-            {/* <CustomButton/> */}
+        <CardFooter className="w-full">
+            <div className="flex justify-between items-center">
+                <p className="text-sm" >{created_at.toLocaleTimeString()}</p>
+                <div className="flex space-x-2">
+                    <CustomButton
+                        callback={() => handleInterested}
+                    >
+                        <BsHeart size={20} />
+                    </CustomButton>
+                    <CustomButton
+                        callback={() => handleJoin}
+                    >
+                        <BsPlusLg size={20} />
+                    </CustomButton>
+                    {/* <CustomButton/> */}
+                </div>
             </div>
         </CardFooter>
         { hovered && 
