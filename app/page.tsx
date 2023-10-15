@@ -10,9 +10,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EventCard, { EventCardProps } from "@/components/homepage/event-card";
 import PostButton from "@/components/PostButton";
-import { deleteOneFromDB, getAllFromDB, getAllFromDBWithMatch, getOneFromDB } from "@/components/db";
-import LogoSVG from './logo';
-import LargeLogoSVG from './large_logo';
+import {
+  deleteOneFromDB,
+  getAllFromDB,
+  getAllFromDBWithMatch,
+  getOneFromDB,
+} from "@/components/db";
+import LogoSVG from "./logo";
+import LargeLogoSVG from "./large_logo";
 import GridDisplay from "@/components/homepage/grid-display";
 
 // const feeds: { title: string; href: string; description: string }[] = [
@@ -110,28 +115,30 @@ export default async function Index() {
   const deleteEvent = async (event: string) => {
     "use server";
     await deleteOneFromDB(supabase, "events", event);
-  }
+  };
 
   const deleteOrg = async (org: string) => {
     "use server";
     await deleteOneFromDB(supabase, "organizations", org);
-  }
+  };
 
   const unpackUsers = async (inp: any) => {
     var parsed = await Promise.all<any>(
-      inp.map((x: string) =>
-        getOneFromDB(supabase, "profiles", x),
-      ),
+      inp.map((x: string) => getOneFromDB(supabase, "profiles", x)),
     );
 
-    return parsed.map(x => x[0]);
+    return parsed.map((x) => x[0]);
   };
 
   const parseCards = async (d: any, dest: string) => {
     return Promise.all(
       d.map(async (elm: any) => {
         if (dest == "organizations") {
-          var parsedOrganizer = await getOneFromDB(supabase, "profiles", elm.organizer);
+          var parsedOrganizer = await getOneFromDB(
+            supabase,
+            "profiles",
+            elm.organizer,
+          );
           parsedOrganizer = parsedOrganizer[0];
 
           elm.attendees = await unpackUsers(elm.attendees);
@@ -147,28 +154,46 @@ export default async function Index() {
 
           return elm;
         }
-      })
-    )
-  }
+      }),
+    );
+  };
 
   const getEventData: () => Promise<any> = async () => {
     return getAllFromDB(supabase, "events").then(async (d) => {
       return parseCards(d, "events");
     });
-  }
-
-  const getDataByMatch: <T extends unknown>(dest: string, param: string, value: T) => Promise<any[]> 
-          = async <T extends unknown>(dest: string, param: string, value: T) => {
-    return getAllFromDBWithMatch(supabase, dest, param, value).then(async (d) => {
-      return parseCards(d, dest);
-    })
   };
 
-  const getDataByContains: <T extends unknown>(dest: string, param: string, value: T) => Promise<any[]> 
-          = async <T extends unknown>(dest: string, param: string, value: T) => {
-    return getAllFromDBWithMatch(supabase, dest, param, value).then(async (d) => {
-      return parseCards(d, dest);
-    })
+  const getDataByMatch: <T extends unknown>(
+    dest: string,
+    param: string,
+    value: T,
+  ) => Promise<any[]> = async <T extends unknown>(
+    dest: string,
+    param: string,
+    value: T,
+  ) => {
+    return getAllFromDBWithMatch(supabase, dest, param, value).then(
+      async (d) => {
+        return parseCards(d, dest);
+      },
+    );
+  };
+
+  const getDataByContains: <T extends unknown>(
+    dest: string,
+    param: string,
+    value: T,
+  ) => Promise<any[]> = async <T extends unknown>(
+    dest: string,
+    param: string,
+    value: T,
+  ) => {
+    return getAllFromDBWithMatch(supabase, dest, param, value).then(
+      async (d) => {
+        return parseCards(d, dest);
+      },
+    );
   };
 
   const eventData = await getEventData();
@@ -201,147 +226,150 @@ export default async function Index() {
       </button>
 
       <div className="flex flex-row w-screen">
-
-      <aside
-        id="default-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
-        aria-label="Sidebar"
-      >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-neutral-50 dark:bg-neutral-800">
-          <div className="flex flex-col h-full justify-between">
-            <div>
-              <ul className="space-y-2 font-medium">
-                <li className="flex flex-row w-full">
-                  
-                  <LogoSVG/>
-                  {/* <LargeLogoSVG/> */}
-                  {/* <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
+        <aside
+          id="default-sidebar"
+          className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+          aria-label="Sidebar"
+        >
+          <div className="h-full px-3 py-4 overflow-y-auto bg-neutral-50 dark:bg-neutral-800">
+            <div className="flex flex-col h-full justify-between">
+              <div>
+                <ul className="space-y-2 font-medium">
+                  <li className="flex flex-row w-full">
+                    <LogoSVG />
+                    {/* <LargeLogoSVG/> */}
+                    {/* <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
                     Pull Up
                   </span> */}
-                </li>
-                <hr/>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-                  >
-                    <BsFire size={25} className="text-[#E68B38] duration-300" />
-                    <span className="font-bold group-hover:text-[#E68B38] duration-300 flex-1 ml-1 whitespace-nowrap">
-                      what's UP
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-                  >
-                    <BsHearts
-                      size={25}
-                      className="group-hover:text-accent-500 text-neutral-500 duration-300"
-                    />
-                    <span className="group-hover:text-accent-500 duration-300 flex-1 ml-1 whitespace-nowrap">
-                      Interested
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-                  >
-                    <FaUserFriends
-                      size={25}
-                      className="group-hover:text-success text-neutral-500 duration-300"
-                    />
-                    <span className="group-hover:text-success duration-300 flex-1 ml-1 whitespace-nowrap">
-                      Friends
-                    </span>
-                  </a>
-                </li>
-                <hr />
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-                  >
-                    <BiSolidCity
-                      size={25}
-                      className="group-hover:text-primary-500 text-neutral-500 duration-300"
-                    />
-                    <span className="group-hover:text-primary-500 duration-300 flex-1 ml-1 whitespace-nowrap">
-                      Organizations
-                    </span>
-                  </a>
-                </li>
-                {organizationData.length > 0
-                  ? organizationData.map((o) => (
-                      <li>
-                        <a
-                          href="#"
-                          className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
-                        >
-                          <BsFillBuildingFill
-                            size={25}
-                            className="group-hover:text-primary-500 text-neutral-500 duration-300"
-                          />
-                          <span className="group-hover:text-primary-500 duration-300 flex-1 ml-1 whitespace-nowrap">
-                            {o ? o.display_name : ""}
-                          </span>
-                        </a>
-                      </li>
-                    ))
-                  : ""}
-              </ul>
-            </div>
-            <div className="bg-neutral-200/80 rounded-lg p-2">
-              {authUser && (
-                <div className="flex flex-row justify-between w-full">
-                  <div className="flex flex-row">
-                    <Avatar className="mr-2">
-                      <AvatarImage src={user.avatar_url} />
-                      <AvatarFallback>
-                        {(user.name ?? "A")[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <p className="text-sm font-bold">{user.username}</p>
-                      <p className="text-sm">{user.name}</p>
+                  </li>
+                  <hr />
+                  <li>
+                    <a
+                      href="#"
+                      className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                    >
+                      <BsFire
+                        size={25}
+                        className="text-[#E68B38] duration-300"
+                      />
+                      <span className="font-bold group-hover:text-[#E68B38] duration-300 flex-1 ml-1 whitespace-nowrap">
+                        what's UP
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                    >
+                      <BsHearts
+                        size={25}
+                        className="group-hover:text-accent-500 text-neutral-500 duration-300"
+                      />
+                      <span className="group-hover:text-accent-500 duration-300 flex-1 ml-1 whitespace-nowrap">
+                        Interested
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                    >
+                      <FaUserFriends
+                        size={25}
+                        className="group-hover:text-success text-neutral-500 duration-300"
+                      />
+                      <span className="group-hover:text-success duration-300 flex-1 ml-1 whitespace-nowrap">
+                        Friends
+                      </span>
+                    </a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a
+                      href="#"
+                      className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                    >
+                      <BiSolidCity
+                        size={25}
+                        className="group-hover:text-primary-500 text-neutral-500 duration-300"
+                      />
+                      <span className="group-hover:text-primary-500 duration-300 flex-1 ml-1 whitespace-nowrap">
+                        Organizations
+                      </span>
+                    </a>
+                  </li>
+                  {organizationData.length > 0
+                    ? organizationData.map((o) => (
+                        <li>
+                          <a
+                            href="#"
+                            className="flex items-center p-2 rounded-lg group hover:bg-neutral-100 duration-300"
+                          >
+                            <BsFillBuildingFill
+                              size={25}
+                              className="group-hover:text-primary-500 text-neutral-500 duration-300"
+                            />
+                            <span className="group-hover:text-primary-500 duration-300 flex-1 ml-1 whitespace-nowrap">
+                              {o ? o.display_name : ""}
+                            </span>
+                          </a>
+                        </li>
+                      ))
+                    : ""}
+                </ul>
+              </div>
+              <div>
+                <div>{authUser !== null && <PostButton />}</div>
+                <div className="bg-neutral-200/80 rounded-lg p-2">
+                  {authUser && (
+                    <div className="flex flex-row justify-between w-full">
+                      <div className="flex flex-row">
+                        <Avatar className="mr-2">
+                          <AvatarImage src={user.avatar_url} />
+                          <AvatarFallback>
+                            {(user.name ?? "A")[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-bold">{user.username}</p>
+                          <p className="text-sm">{user.name}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        className="hover:text-primary-500 duration-300"
+                      >
+                        <Link href="/auth/sign-out">
+                          <TbLogout size={20} />
+                        </Link>
+                      </Button>
                     </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    className="hover:text-primary-500 duration-300"
-                  >
-                    <Link href="/auth/sign-out">
-                      <TbLogout size={20} />
-                    </Link>
-                  </Button>
+                  )}
+                  {!authUser && (
+                    <div className="flex flex-row">
+                      <Button className="text-white w-full mr-2">
+                        <Link href="/login">Login</Link>
+                      </Button>
+                      <Button className="text-white w-full">
+                        <Link href="/register">Register</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              )}
-              {!authUser && (
-                <div className="flex flex-row">
-                  <Button className="text-white w-full mr-2">
-                    <Link href="/login">Login</Link>
-                  </Button>
-                  <Button className="text-white w-full">
-                    <Link href="/register">Register</Link>
-                  </Button>
-                </div>
-              )}
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
 
-      <GridDisplay 
-        eventData={eventData} 
-        userId={userId}
-        content={"events"}
-        getDataByMatch={getDataByMatch}
-        getDataByContains={getDataByContains}
-      />
-
+        <GridDisplay
+          eventData={eventData}
+          userId={userId}
+          content={"events"}
+          getDataByMatch={getDataByMatch}
+          getDataByContains={getDataByContains}
+        />
       </div>
     </>
   );
