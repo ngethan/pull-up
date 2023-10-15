@@ -40,16 +40,6 @@ def fetch_and_convert_to_dataframe(supabase, table_name):
         print(f"No data in {table_name} or table doesn't exist.")
         return None
 
-# Update user data in Supabase
-def update_user_in_supabase(supabase, user_id, updated_data):
-    response = supabase.table('profiles').update(updated_data, ['id']).eq('id', user_id).execute()
-    if 'error' in response:
-        print(f"Failed to update user {user_id}. Error: {response['error']}")
-        return False
-    else:
-        print(f"Successfully updated user {user_id}")
-        return True
-
 def fetch_profile_by_id(supabase, profile_id):
     rows = supabase.table("profiles").select("*").eq("id", profile_id).execute()
     if rows['data']:
@@ -57,40 +47,6 @@ def fetch_profile_by_id(supabase, profile_id):
     else:
         print(f"No profile found with ID {profile_id}")
         return None
-
-# Placeholder function for Drew's ML logic --------------------------------------------------------------------
-def compute_event_score(profile_id, event_row):
-
-    np.array()
-    model= LinearRegression()
-    import random
-    return random.random()
-
-    if data_profiles is None or data_events is None:
-        print("One of the dataframes is None. Exiting.")
-        return None
-    
-    if data_profiles.empty or data_events.empty:
-        print("One of the dataframes is empty. Exiting.")
-        return None
-
-    user_event_scores = defaultdict(dict)
-    pool = Pool()
-    user_event_pairs = [(user_row, event_row) for _, user_row in data_profiles.iterrows() for _, event_row in data_events.iterrows()]
-    scores = pool.starmap(compute_score_for_user_event_pair, user_event_pairs)
-
-    for user_id, event_id, score in scores:
-        user_event_scores[user_id][event_id] = score
-
-    pool.close()
-    pool.join()
-
-    # Example: Update user in Supabase based on the calculated score
-    for user_id in user_event_scores.keys():
-        top_event_id = max(user_event_scores[user_id], key=user_event_scores[user_id].get)
-        update_user_in_supabase(supabase, user_id, {'top_event_id': top_event_id})
-    
-    return user_event_scores
 
 id=get_uuid()
 user=fetch_profile_by_id(id)
@@ -114,10 +70,11 @@ def friendsPresent(row):
     return 0
 
 def orgMatch(row):
-    if is not None:
-        for org in user['organizations']:
-            if org in 
-
+    if orgList is not None:
+        for org in orgList:
+            if org in np_events[row,9]:
+                return 1
+    return 0
 # org for event 9
 
 pastSize=0
@@ -146,6 +103,9 @@ for row in np_events.shape[0]:
     ml_vars_np[row,0]=friendsPresent(row)
     X_train[row,0]=friendsPresent(row)
 for row in np_events.shape[0]:
-    ml_vars_np[row,1]=friendsPresent(row)
-    X_train[row,1]=friendsPresent(row)
+    ml_vars_np[row,1]=orgMatch(row)
+    X_train[row,1]=orgMatch(row)
+model.fit(X_train,y)
+scores=model.predict(ml_vars_np)
+print(scores)
 
