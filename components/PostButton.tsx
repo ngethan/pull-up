@@ -14,7 +14,15 @@ import { DialogFooter, DialogHeader } from "./ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
 import { ChevronDownIcon } from "lucide-react";
 
 import { useForm } from "react-hook-form";
@@ -25,7 +33,7 @@ const PostButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="text-white">
+        <Button className="text-white w-full mb-[10px]">
           <BsPlusLg className="mr-1" />
           Post Up
         </Button>
@@ -48,11 +56,7 @@ const PostButton = () => {
                 <Label htmlFor="title" className="text-right">
                   Title
                 </Label>
-                <Input
-                  id="title"
-                  defaultValue=""
-                  className="col-span-3"
-                />
+                <Input id="title" defaultValue="" className="col-span-3" />
               </FormItem>
               <FormItem className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
