@@ -1,6 +1,12 @@
 "use client";
 
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { BasicOrg, BasicUser, SVGList } from "../types";
 import {
   Card,
@@ -25,9 +31,9 @@ import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa";
 import { Form } from "../ui/form";
 import { BiEditAlt } from "react-icons/bi";
-import { MdOutlineDriveFileMove } from 'react-icons/md';
+import { MdOutlineDriveFileMove } from "react-icons/md";
 export interface TagProps {
-    id: string;
+  id: string;
   title: string;
   tcolor: string;
   bgcolor: string;
@@ -37,8 +43,8 @@ export interface TagProps {
 }
 
 export interface EventCardProps {
-    activeUser: string,
-    id: string,
+  activeUser: string;
+  id: string;
   title: string;
   created_at: Date;
   organizer: BasicUser;
@@ -52,9 +58,9 @@ export interface EventCardProps {
 }
 
 export interface ButtonProps<T> {
-    children: ReactNode;
-    toggleable?: boolean;
-    className?: string;
+  children: ReactNode;
+  toggleable?: boolean;
+  className?: string;
   callback?: (pressed: boolean) => T;
 }
 
@@ -72,13 +78,12 @@ function CustomButton<T>(props: ButtonProps<T>) {
 
   const onPress = () => {
     props.callback!(!pressed);
-    if (props.toggleable)
-        setPressed(!pressed);
+    if (props.toggleable) setPressed(!pressed);
   };
 
   return (
     <a
-        onClick={onPress}
+      onClick={onPress}
       className={`flex items-center justify-center space-x-2 rounded-md p-2
             border border-solid cursor-pointer
             ${
@@ -87,7 +92,7 @@ function CustomButton<T>(props: ButtonProps<T>) {
                 : `text-primary-500 border-neutral-200 hover:bg-primary-500 hover:text-[#fff] hover:border-primary-500 hover:shadow-md duration-300`
             } ${props.className}`}
     >
-        {props.children}
+      {props.children}
       {/* <BsHearts  /> */}
       {/* <span className="text-sm">Read More</span> */}
     </a>
@@ -95,25 +100,23 @@ function CustomButton<T>(props: ButtonProps<T>) {
 }
 
 const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
-    var initialHeight: number | undefined = 0;
+  var initialHeight: number | undefined = 0;
 
-    const [expanded, setExpanded] = useState(false);
-    const [spanNum, setSpanNum] = useState(1);
-    const [hovered, setHovered] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [spanNum, setSpanNum] = useState(1);
+  const [hovered, setHovered] = useState(false);
 
-    const descriptionRef = useCallback((node: HTMLDivElement) => {
-        if (props.description?.length! > 200) {
-            if (expanded) {
-                console.log(node.clientHeight!/initialHeight!);
-                setSpanNum(Math.ceil(node.clientHeight!/initialHeight!));
-            }
-            else {
-                initialHeight = expanded ? initialHeight : node.clientHeight;
-                console.log(initialHeight);
-            }
-            
-        }
-    }, []);
+  const descriptionRef = useCallback((node: HTMLDivElement) => {
+    if (props.description?.length! > 200) {
+      if (expanded) {
+        console.log(node.clientHeight! / initialHeight!);
+        setSpanNum(Math.ceil(node.clientHeight! / initialHeight!));
+      } else {
+        initialHeight = expanded ? initialHeight : node.clientHeight;
+        console.log(initialHeight);
+      }
+    }
+  }, []);
 
   const handleInterested = (e: Event) => {
     console.log(e);
@@ -123,131 +126,143 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
     console.log(e);
   };
 
-  const handleEdit = () => {
+  const handleEdit = () => {};
 
-  };
+  const handleDelete = () => {};
 
-  const handleDelete = () => {
-
-  };
-
-  const handleMove = () => {
-
-  };
+  const handleMove = () => {};
 
   const handleCardPress = () => {
-    if (props.description?.length! > 200)
-        setExpanded(!expanded);
-  }
+    if (props.description?.length! > 200) setExpanded(!expanded);
+  };
 
   const created_at = new Date(props.created_at);
 
-//   console.log(props.attendees);
+  //   console.log(props.attendees);
 
-//   useEffect(() => {
-//       console.log("hello");
-//       if (props.description.length > 200) {
-//         console.log(Math.ceil(descriptionRef.current?.clientHeight!/initialHeight!));
-//         setSpanNum();
-//       }
-//   }, [spanNum]);
+  //   useEffect(() => {
+  //       console.log("hello");
+  //       if (props.description.length > 200) {
+  //         console.log(Math.ceil(descriptionRef.current?.clientHeight!/initialHeight!));
+  //         setSpanNum();
+  //       }
+  //   }, [spanNum]);
 
   return (
-        <Card 
-            key={props.id}
-            className={`relative mx-auto w-full cursor-pointer duration-300 hover:-translate-y-[7px] ${expanded ? `row-span-2` : ""}`}
-            onClick={handleCardPress}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-        >
+    <Card
+      key={props.id}
+      className={`relative mx-auto w-full cursor-pointer duration-300 hover:-translate-y-[7px] ${
+        expanded ? `row-span-2` : ""
+      }`}
+      onClick={handleCardPress}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex flex-col justify-between h-full">
         <CardHeader className="space-y-0.5">
+          <div className="flex flex-col">
             <div className="flex justify-between">
-            <div className="flex flex-col">
-                <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
-                <div className="flex justify-between">
-                    <p className="text-sm text-neutral-600">
-                    Organized by <a 
-                            className="text-primary-900 text-bold"
-                            href={`/u/${props.organizer?.username}`}>{props.organizer?.name}
-                        </a>
-                    </p>
-                </div>
-            </div>
-            <div className="flex mb-5 -space-x-6">
-                {props.attendees
-                ?.filter((_, i) => i < 3)
-                .map((a) => (
-                        a.avatar_url ?
-                            <img
-                                className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
-                                src={a.avatar_url}
-                                alt=""
-                            />
-                        :
-                            <p className="flex items-center justify-center w-10 h-10 text-sm font-medium text-white bg-gray-700 border-2 border-white rounded-full" >
-                                {a.name ? a.name.charAt(0) : "?"}
-                            </p>
-                ))}
-                {props.attendees && props.attendees.length > 3 && (
-                    <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800" href="#">
-                        +{props.attendees.length - 3}
+              <div className="flex flex-col">
+                <CardTitle className="text-lg font-bold">
+                  {props.title}
+                </CardTitle>
+                <div className="flex justify-between mb-[10px]">
+                  <p className="text-sm text-neutral-600">
+                    Organized by{" "}
+                    <a
+                      className="text-primary-900 text-bold"
+                      href={`/u/${props.organizer?.username}`}
+                    >
+                      {props.organizer?.name}
                     </a>
+                  </p>
+                </div>
+              </div>
+              <div className="flex mb-5 -space-x-6">
+                {props.attendees
+                  ?.filter((_, i) => i < 3)
+                  .map((a) =>
+                    a.avatar_url ? (
+                      <img
+                        className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                        src={a.avatar_url}
+                        alt=""
+                      />
+                    ) : (
+                      <p className="flex items-center justify-center w-10 h-10 text-sm font-medium text-white bg-gray-700 border-2 border-white rounded-full">
+                        {a.name ? a.name.charAt(0) : "?"}
+                      </p>
+                    ),
+                  )}
+                {props.attendees && props.attendees.length > 3 && (
+                  <a
+                    className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
+                    href="#"
+                  >
+                    +{props.attendees.length - 3}
+                  </a>
                 )}
+              </div>
             </div>
+            <div className="mb-[10px]">
+              <p ref={descriptionRef} className="text-xs text-muted-foreground">
+                {props.description?.length! > 200 && !expanded
+                  ? props.description?.slice(0, 200) + "..."
+                  : props.description}
+              </p>
+              {/* {props.tags?.map((t) => {
+                <Tag {...t} />;
+              })} */}
             </div>
+          </div>
         </CardHeader>
         {/* <div className="h-[0.05rem] bg-neutral-300" /> */}
-        <CardContent>
-            <>
-            <p ref={descriptionRef} className="text-xs text-muted-foreground">
-                {props.description?.length! > 200 && !expanded ? props.description?.slice(0, 200) + "..." : props.description}
-                </p>
-            {props.tags?.map((t) => {
-                <Tag {...t} />;
-            })}
-            </>
-        </CardContent>
-        <CardFooter className="w-full">
-            <div className="flex justify-between items-center">
-                <p className="text-sm" >{created_at.toLocaleTimeString()}</p>
-                <div className="flex space-x-2">
-                    <CustomButton
-                        callback={() => handleInterested}
-                    >
-                        <BsHeart size={20} />
-                    </CustomButton>
-                    <CustomButton
-                        callback={() => handleJoin}
-                    >
-                        <BsPlusLg size={20} />
-                    </CustomButton>
-                    {/* <CustomButton/> */}
-                </div>
+        <CardFooter className="w-full px-6 py-2">
+          <div className="flex w-full justify-between items-center">
+            <p className="text-sm text-neutral-500">
+              {created_at.toLocaleDateString("en-us", {
+                weekday: "long",
+              })}
+              {", "}
+              {created_at.toLocaleTimeString("en-us", {
+                hour: "numeric",
+                minute: "numeric",
+              })}
+            </p>
+            <div className="flex space-x-2">
+              <CustomButton callback={() => handleInterested}>
+                <BsHeart size={20} />
+              </CustomButton>
+              <CustomButton callback={() => handleJoin}>
+                <BsPlusLg size={20} />
+              </CustomButton>
             </div>
+          </div>
         </CardFooter>
-        { hovered && 
-            <div className="flex absolute bottom-0 left-[2rem]">
-                <CustomButton 
-                    className="rounded-none rounded-tl-md"
-                    callback={() => handleEdit}
-                >
-                    <BiEditAlt size={18} />
-                </CustomButton>
-                <CustomButton 
-                    className="rounded-none border-l-[1px]"
-                    callback={() => handleDelete}
-                >
-                    <BsTrash size={18} />
-                </CustomButton>
-                <CustomButton 
-                    className="rounded-none rounded-tr-md"
-                    callback={() => handleMove}
-                >
-                    <MdOutlineDriveFileMove size={18} />
-                </CustomButton>
-            </div>
-        }
-        </Card>
+      </div>
+      {/* {hovered && (
+        <div className="flex absolute bottom-0 left-[2rem]">
+          <CustomButton
+            className="rounded-none rounded-tl-md"
+            callback={() => handleEdit}
+          >
+            <BiEditAlt size={18} />
+          </CustomButton>
+          <CustomButton
+            className="rounded-none border-l-[1px]"
+            callback={() => handleDelete}
+          >
+            <BsTrash size={18} />
+          </CustomButton>
+          <CustomButton
+            className="rounded-none rounded-tr-md"
+            callback={() => handleMove}
+          >
+            <MdOutlineDriveFileMove size={18} />
+          </CustomButton>
+        </div>
+      )} */}
+    </Card>
   );
 };
 
