@@ -17,11 +17,15 @@ import {
   BsHeart,
   BsHearts,
   BsPlusLg,
+  BsTrash,
 } from "react-icons/bs";
 import { postAPI } from "../std";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa";
+import { Form } from "../ui/form";
+import { BiEditAlt } from "react-icons/bi";
+import { MdOutlineDriveFileMove } from 'react-icons/md';
 export interface TagProps {
   title: string;
   tcolor: string;
@@ -32,6 +36,7 @@ export interface TagProps {
 }
 
 export interface EventCardProps {
+    activeUser: string,
     uuid: string,
   title: string;
   organizer: BasicUser;
@@ -44,6 +49,8 @@ export interface EventCardProps {
 }
 
 export interface ButtonProps<T> {
+    children: ReactNode;
+    className?: string,
   callback?: (pressed: boolean) => T;
 }
 
@@ -61,22 +68,23 @@ function CustomButton<T>(props: ButtonProps<T>) {
 
   const onPress = () => {
     setPressed(!pressed);
-    //props.callback(!pressed);
+    props.callback!(!pressed);
   };
 
   return (
-    <div
-      className={`flex items-center justify-center space-x-2 rounded-lg p-2
+    <a
+      className={`flex items-center justify-center space-x-2 rounded-md p-2
             border border-solid cursor-pointer
             ${
               pressed
-                ? `text-[#ffffff] bg-accent-500 hover:bg-none hover:text-accent-500 hover:border-accent-500`
-                : `text-neutral-400 border-neutral-400 hover:bg-accent-500 hover:text-[#fff] hover:border-accent-500 hover:shadow-md duration-300`
-            }`}
+                ? `text-[#ffffff] bg-primary-500 hover:bg-none hover:text-primary-500 hover:border-primary-500`
+                : `text-primary-500 border-neutral-200 hover:bg-primary-500 hover:text-[#fff] hover:border-primary-500 hover:shadow-md duration-300`
+            } ${props.className}`}
     >
+        {props.children}
       {/* <BsHearts onClick={onPress} /> */}
-      <span className="text-sm">Read More</span>
-    </div>
+      {/* <span className="text-sm">Read More</span> */}
+    </a>
   );
 }
 
@@ -85,6 +93,7 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
 
     const [expanded, setExpanded] = useState(false);
     const [spanNum, setSpanNum] = useState(1);
+    const [hovered, setHovered] = useState(false);
 
     const descriptionRef = useCallback((node: HTMLDivElement) => {
         if (props.description?.length! > 200) {
@@ -117,6 +126,8 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
         setExpanded(!expanded);
   }
 
+//   console.log(props.attendees);
+
 //   useEffect(() => {
 //       console.log("hello");
 //       if (props.description.length > 200) {
@@ -126,66 +137,87 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
 //   }, [spanNum]);
 
   return (
-    <Card 
-        key={props.uuid}
-        className={`cursor-pointer duration-300 hover:-translate-y-[7px] ${expanded ? `row-span-2` : ""}`}
-        onClick={handleCardPress}
-    >
-      <CardHeader className="space-y-0.5">
-        <div className="flex justify-between">
-          <div className="flex flex-col">
-            <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
-            <p className="text-sm text-neutral-600">
-              Organized by {props.organizer?.displayName}
-            </p>
-          </div>
-          <div className="flex mb-5 -space-x-6">
-            {props.attendees
-              ?.filter((_, i) => i < 3)
-              .map((a) => { 
-                  console.log(a);
-                return(
-                <img
-                  className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
-                  src={a.avatar_url}
-                  alt=""
-                />
-              )})}
-            {props.attendees && props.attendees.length > 3 && (
-                <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800" href="#">
-                    +{props.attendees.length - 3}
-                </a>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      {/* <div className="h-[0.05rem] bg-neutral-300" /> */}
-      <CardContent>
-        <>
-          <p ref={descriptionRef} className="text-sm text-muted-foreground">
-              {props.description?.length! > 200 && !expanded ? props.description?.slice(0, 200) + "..." : props.description}
-            </p>
-          {props.tags?.map((t) => {
-            <Tag {...t} />;
-          })}
-        </>
-      </CardContent>
-      <CardFooter className="float-right">
-        <div className="flex space-x-2">
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => handleInterested}
-          >
-            <BsHeart size={20} className="text-primary-500" />
-          </Button>
-          <Button size="icon" variant="outline" onClick={() => handleJoin}>
-            <BsPlusLg size={20} className="text-primary-500" />
-          </Button>
-          {/* <CustomButton/> */}
-        </div>
-      </CardFooter>
-    </Card>
+        <Card 
+            key={props.uuid}
+            className={`relative mx-auto w-full cursor-pointer duration-300 hover:-translate-y-[7px] ${expanded ? `row-span-2` : ""}`}
+            onClick={handleCardPress}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
+        <CardHeader className="space-y-0.5">
+            <div className="flex justify-between">
+            <div className="flex flex-col">
+                <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
+                <p className="text-sm text-neutral-600">
+                Organized by <a 
+                        className="text-primary-900 text-bold"
+                        href={`/u/${props.organizer?.username}`}>{props.organizer?.name}
+                    </a>
+                </p>
+            </div>
+            <div className="flex mb-5 -space-x-6">
+                {props.attendees
+                ?.filter((_, i) => i < 3)
+                .map((a) => (
+                        a.avatar_url ?
+                            <img
+                                className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                                src={a.avatar_url}
+                                alt=""
+                            />
+                        :
+                            <p className="flex items-center justify-center w-10 h-10 text-sm font-medium text-white bg-gray-700 border-2 border-white rounded-full" >
+                                {a.name ? a.name.charAt(0) : "?"}
+                            </p>
+                ))}
+                {props.attendees && props.attendees.length > 3 && (
+                    <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800" href="#">
+                        +{props.attendees.length - 3}
+                    </a>
+                )}
+            </div>
+            </div>
+        </CardHeader>
+        {/* <div className="h-[0.05rem] bg-neutral-300" /> */}
+        <CardContent>
+            <>
+            <p ref={descriptionRef} className="text-xs text-muted-foreground">
+                {props.description?.length! > 200 && !expanded ? props.description?.slice(0, 200) + "..." : props.description}
+                </p>
+            {props.tags?.map((t) => {
+                <Tag {...t} />;
+            })}
+            </>
+        </CardContent>
+        <CardFooter className="float-right">
+            <div className="flex space-x-2">
+            <CustomButton
+                callback={() => handleInterested}
+            >
+                <BsHeart size={20} />
+            </CustomButton>
+            <CustomButton
+                callback={() => handleJoin}
+            >
+                <BsPlusLg size={20} />
+            </CustomButton>
+            {/* <CustomButton/> */}
+            </div>
+        </CardFooter>
+        { hovered && 
+            <div className="flex absolute bottom-0 left-[2rem]">
+                <CustomButton className="rounded-none rounded-tl-md">
+                    <BiEditAlt size={18} />
+                </CustomButton>
+                <CustomButton className="rounded-none border-l-[1px]">
+                    <BsTrash size={18} />
+                </CustomButton>
+                <CustomButton className="rounded-none rounded-tr-md">
+                    <MdOutlineDriveFileMove size={18} />
+                </CustomButton>
+            </div>
+        }
+        </Card>
   );
 };
 

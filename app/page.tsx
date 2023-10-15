@@ -11,6 +11,8 @@ import Link from "next/link";
 import EventCard, { EventCardProps } from "@/components/homepage/event-card";
 import PostButton from "@/components/PostButton";
 import { getAllFromDB, getOneFromDB } from "@/components/db";
+import LogoSVG from './logo'
+
 // const feeds: { title: string; href: string; description: string }[] = [
 //   { title: "Trending", href: "/", description: "Trending events" },
 //   { title: "Friends", href: "/friends", description: "Events from friends" },
@@ -106,16 +108,22 @@ export default async function Index() {
   const getData: () => Promise<any> = async () => {
     return getAllFromDB(supabase, "events").then(async (d) => {
       return Promise.all(
-        d.map(async (event: { attendees: string[] }) => {
-          const parsed = await Promise.all(
+        d.map(async (event: any) => {
+          var parsedAttend = await Promise.all<any>(
             event.attendees.map((x: string) =>
               getOneFromDB(supabase, "profiles", x),
             ),
           );
 
-          console.log(parsed.length);
+          var parsedOrganizer = await getOneFromDB(supabase, "profiles", event.organizer);
 
-          event.attendees = parsed;
+          parsedAttend = parsedAttend.map(x => x[0]);
+          parsedOrganizer = parsedOrganizer[0];
+
+          console.log(parsedOrganizer);
+
+          event.attendees = parsedAttend;
+          event.organizer = parsedOrganizer;
 
           return event;
         }),
@@ -152,6 +160,8 @@ export default async function Index() {
         </svg>
       </button>
 
+      <div className="flex flex-row w-screen">
+
       <aside
         id="default-sidebar"
         className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
@@ -161,10 +171,11 @@ export default async function Index() {
           <div className="flex flex-col h-full justify-between">
             <div>
               <ul className="space-y-2 font-medium">
-                <li className="w-full text-center">
-                  <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
+                <li className="flex flex-row w-full">
+                  <LogoSVG/>
+                  {/* <span className="font-bold text-2xl duration-300 flex-1 ml-1 whitespace-nowrap">
                     Pull Up
-                  </span>
+                  </span> */}
                 </li>
                 <hr />
                 <li>
@@ -281,20 +292,23 @@ export default async function Index() {
         </div>
       </aside>
 
-      <div className="sm:ml-64 pt-6">
+      <div className="sm:ml-64 pt-6 w-full p-10">
         {/* <div className="grid grid-cols-3 gap-4">
           {sampleEvents.map((e) => (
             <EventCard {...e} />
           ))}
         </div> */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map((e: EventCardProps) => (
-            <EventCard {...e} />
+            <EventCard {...e} activeUser={userId} />
           ))}
+          <div className={data.length > 8 ? "absolute bottom-[2rem] right-[10rem]" : "w-full"}>
+            <PostButton />
+          </div>
         </div>
       </div>
 
-      <PostButton />
+      </div>
     </>
   );
 }
