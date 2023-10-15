@@ -77,7 +77,7 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
                 <div className="flex content-between space-x-4">
                     <div className="flex flex-col">
                         <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
-                        <p className="text-sm text-neutral-600">Organized by {props.organization}</p>
+                        <p className="text-sm text-neutral-600">Organized by {props.organization?.displayName}</p>
                     </div>
                     <div className="flex mb-5 -space-x-6">
                         {props.attendees?.filter((_, i) => i < 3).map(a => (
