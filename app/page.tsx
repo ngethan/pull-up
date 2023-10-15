@@ -225,9 +225,42 @@ export default async function Index() {
     });
   };
 
+  const getWeights: () => Promise<any> = async () => {
+    "use server";
+    return getAllFromDB(supabase, "weighted_events").then(async (d) => {
+      d.sort((a: any, b: any) => a.value-b.value);
+      return Promise.all(
+        d.map(async (w: any) => {
+          return getOneFromDB(supabase, "events", w.event_id).then(async (event: any) => {
+
+            console.log("Hello");
+
+            var parsedAttend = await Promise.all<any>(
+              event.attendees.map((x: string) =>
+                getOneFromDB(supabase, "profiles", x),
+              ),
+            );
+  
+            var parsedOrganizer = await getOneFromDB(supabase, "profiles", event.organizer);
+  
+            parsedAttend = parsedAttend.map(x => x[0]);
+            parsedOrganizer = parsedOrganizer[0];
+  
+            console.log(parsedOrganizer);
+  
+            event.attendees = parsedAttend;
+            event.organizer = parsedOrganizer;
+  
+            return event;
+          })
+        }),
+      );
+    });
+  };
+
   // const eventData = await getEventData();
 
-  const eventData = await OGgetEventData();
+  const eventData = await getWeights();
 
   // console.log(data[0].attendees);
 
