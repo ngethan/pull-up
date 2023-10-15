@@ -130,11 +130,15 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
       </CardContent>
       <CardFooter className="float-right">
         <div className="flex space-x-2">
-          <Button size="icon" onClick={() => handleInterested}>
-            <BsFillSuitHeartFill size={25} className="text-neutral-50" />
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => handleInterested}
+          >
+            <BsFillSuitHeartFill size={20} className="text-primary-500" />
           </Button>
-          <Button size="icon" onClick={() => handleJoin}>
-            <BsPlusLg size={25} className="text-neutral-50" />
+          <Button size="icon" variant="outline" onClick={() => handleJoin}>
+            <BsPlusLg size={20} className="text-primary-500" />
           </Button>
         </div>
       </CardFooter>
