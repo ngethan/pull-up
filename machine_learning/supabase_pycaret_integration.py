@@ -5,6 +5,23 @@ import numpy as np
 from supabase_py import create_client, Client
 from collections import defaultdict
 from multiprocessing import Pool
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/get_uuid', methods=['GET'])
+def get_uuid():
+    uuid = request.headers.get('uuid', None)
+    if uuid:
+        return {"message": f"Received UUID: {uuid}"}, 200
+    else:
+        return {"message": "UUID not found in header"}, 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 # Initialize Supabase client
 supabase_url = "https://kngkkgipbghzkzrmoawb.supabase.co/"
@@ -79,19 +96,29 @@ def rank_events_for_users(data_profiles, data_events):
     for user_id in user_event_scores.keys():
         top_event_id = max(user_event_scores[user_id], key=user_event_scores[user_id].get)
         update_user_in_supabase(supabase, user_id, {'top_event_id': top_event_id})
-        return user_event_scores
+    
+    return user_event_scores
+
+id=12
+user=fetch_profile_by_id(id)
+
+
+def friendsPresent(row):
+    h
+
+def multFriends(row):
+    w
+
+def AuthIsFriend(row):
+    h
+
+def AuthSameMajor(row):
+    h
+
+methodDict={1: friendsPresent,2:multFriends}
 # Fetch data
 data_events = fetch_and_convert_to_dataframe(supabase, "events")
-#data_profiles = fetch_and_convert_to_dataframe(supabase, "profiles")
 
 np_events=data_events.to_numpy()
 
 ml_vars_np=np.zeros((np_events.shape[1],52))
-
-
-# Rank events for users
-if data_events is not None and data_profiles is not None:
-    user_event_scores = rank_events_for_users(data_profiles, data_events)
-    # Do something with user_event_scores
-else:
-    print("Data fetch failed. Please check your Supabase tables.")
