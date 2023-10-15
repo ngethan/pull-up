@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Form, FormField } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 
-export default function Setup() {
+export default function SetupUsername() {
   const form = useForm();
 
   const supabase = createClientComponentClient();
@@ -34,7 +34,7 @@ export default function Setup() {
         <Form {...form}>
           <form
             className="space-y-8 mb-[30px]"
-            action="setup-username"
+            action="setup-username-route"
             method="post"
           >
             <FormField
@@ -71,7 +71,7 @@ export default function Setup() {
                   )}
                   <div className="mt-[30px] flex flex-row">
                     <Button
-                      formAction="setup-username"
+                      formAction="setup-username-route"
                       type="submit"
                       className="w-full text-white mb-[30px]"
                     >
