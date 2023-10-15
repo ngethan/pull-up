@@ -173,6 +173,7 @@ export default async function Index() {
     param: string,
     value: T,
   ) => {
+    "use server";
     return getAllFromDBWithMatch(supabase, dest, param, value).then(
       async (d) => {
         return parseCards(d, dest);
@@ -189,6 +190,7 @@ export default async function Index() {
     param: string,
     value: T,
   ) => {
+    "use server";
     return getAllFromDBWithMatch(supabase, dest, param, value).then(
       async (d) => {
         return parseCards(d, dest);
@@ -196,7 +198,36 @@ export default async function Index() {
     );
   };
 
-  const eventData = await getEventData();
+  const OGgetEventData: () => Promise<any> = async () => {
+    "use server";
+    return getAllFromDB(supabase, "events").then(async (d) => {
+      return Promise.all(
+        d.map(async (event: any) => {
+          var parsedAttend = await Promise.all<any>(
+            event.attendees.map((x: string) =>
+              getOneFromDB(supabase, "profiles", x),
+            ),
+          );
+
+          var parsedOrganizer = await getOneFromDB(supabase, "profiles", event.organizer);
+
+          parsedAttend = parsedAttend.map(x => x[0]);
+          parsedOrganizer = parsedOrganizer[0];
+
+          console.log(parsedOrganizer);
+
+          event.attendees = parsedAttend;
+          event.organizer = parsedOrganizer;
+
+          return event;
+        }),
+      );
+    });
+  };
+
+  // const eventData = await getEventData();
+
+  const eventData = await OGgetEventData();
 
   // console.log(data[0].attendees);
 
