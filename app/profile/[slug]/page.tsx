@@ -1,9 +1,10 @@
+"use client"
+
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import { getOneFromDB } from '../../components/db';
-import { Avatar, AvatarImage } from '../../components/ui/avatar';
+import { usePathname, useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { getOneFromDB } from '@/components/db';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
 type ProfileType = {
   name: string;
@@ -11,11 +12,11 @@ type ProfileType = {
   bio: string;
 };
 
+// Removed params from the function arguments
 export default function ProfilePage() {
   const router = useRouter();
-  const supabase = createServerComponentClient({ cookies });
-  const { slug } = router.query;
-  console.log('slug:', slug);
+  const supabase = createClientComponentClient();
+  const slug = usePathname().substring(9);
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
