@@ -21,6 +21,7 @@ import {
   BsFillArrowUpSquareFill,
   BsFillSuitHeartFill,
   BsHeart,
+  BsHeartFill,
   BsHearts,
   BsPlusLg,
   BsTrash,
@@ -118,8 +119,8 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
     }
   }, []);
 
-  const handleInterested = (e: Event) => {
-    console.log(e);
+  const handleInterested = (pressed: boolean) => {
+    // props.supabase.from("events").update({ liked: pressed }).eq('id', props.id);
   };
 
   const handleJoin = (e: Event) => {
