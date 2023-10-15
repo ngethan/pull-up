@@ -1,6 +1,6 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsFire, BsFillBuildingFill, BsHearts } from "react-icons/bs";
 import { BiSolidCity } from "react-icons/bi";
 import { FaUserFriends } from "react-icons/fa";
@@ -18,6 +18,7 @@ import {
 } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
+import { getAllFromDB, getOneFromDB } from "@/components/db";
 // const feeds: { title: string; href: string; description: string }[] = [
 //   { title: "Trending", href: "/", description: "Trending events" },
 //   { title: "Friends", href: "/friends", description: "Events from friends" },
@@ -27,64 +28,70 @@ import { Input } from "@/components/ui/input";
 //     description: "Events from your communities",
 //   },
 // ];
-const sampleEvents: EventCardProps[] = [
-  {
-    title: "Volleyball on the swamp",
-    description: "Come play volleyball on the swamp!",
-    likes: 0,
-    attendees: [
-      {
-        displayName: "Nate Hayman",
-        userName: "nathanielhayman",
-        avatar:
-          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
-      },
-      {
-        displayName: "Nate Hayman",
-        userName: "nathanielhayman",
-        avatar:
-          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
-      },
-      {
-        displayName: "Nate Hayman",
-        userName: "nathanielhayman",
-        avatar:
-          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
-      },
-      {
-        displayName: "Nate Hayman",
-        userName: "nathanielhayman",
-        avatar:
-          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
-      },
-    ],
-  },
-  {
-    title: "Study in Olin",
-    description: "Come study with us in Olin Library!",
-    likes: 0,
-  },
-  {
-    title: "Study in Olin",
-    description: "Come study with us in Olin Library!",
-    likes: 0,
-  },
-  {
-    title: "Study in Olin",
-    description: "Come study with us in Olin Library!",
-    likes: 0,
-  },
-  {
-    title: "Study in Olin",
-    description: "Come study with us in Olin Library!",
-    likes: 0,
-  },
-  {
-    title: "Study in Olin",
-    description: "Come study with us in Olin Library!",
-    likes: 0,
-  },
-];
+// const sampleEvents: EventCardProps[] = [
+//   {
+//     uuid:"abc1",
+//     title: "Study in Olin",
+//     description: "Vero dolor dignissimos minima animi cum tempore velit. Corporis mollitia quibusdam eaque atque sit quasi. Laboriosam amet eos deleniti recusandae alias.Rem in aut sint molestiae ut. Mollitia et rerum quibusdam quis voluptate excepturi praesentium. Quo architecto corporis quo et et molestias. Maxime facilis ut repellat soluta temporibus. Sit dolorum optio qui illum doloremque amet. Incidunt sed tempora reiciendis doloribus placeat reprehenderit et repellendus.Ex dolor maxime et magnam culpa autem fugit quos. Repellat aspernatur expedita placeat harum alias illum. Fugiat ut in quia qui alias.Mollitia ut dolor quod. Iste facilis iste dolores. Asperiores cumque corrupti occaecati. Aut sint laborum nisi. Tempore qui ea aut a et ipsa dolor. Eum eveniet consequatur iste deserunt eaque animi.Ex eius nulla aperiam. Nam non placeat sint dolores vero voluptatibus expedita accusamus. Velit reiciendis saepe perspiciatis temporibus aut in omnis eum. Fuga incidunt tempore odit error assumenda cum quibusdam. Voluptates aut laudantium non blanditiis sint asperiores est.",
+//     likes: 0,
+//   },
+//   {
+//     uuid:"abc2",
+//     title: "Volleyball on the swamp",
+//     description: "Come play volleyball on the swamp!",
+//     likes: 0,
+//     attendees: [
+//       {
+//         displayName: "Nate Hayman",
+//         userName: "nathanielhayman",
+//         avatar:
+//           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+//       },
+//       {
+//         displayName: "Nate Hayman",
+//         userName: "nathanielhayman",
+//         avatar:
+//           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+//       },
+//       {
+//         displayName: "Nate Hayman",
+//         userName: "nathanielhayman",
+//         avatar:
+//           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+//       },
+//       {
+//         displayName: "Nate Hayman",
+//         userName: "nathanielhayman",
+//         avatar:
+//           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ff0%2F6c%2F98%2Ff06c986500a82f9c16e821ebac0503d1.jpg&f=1&nofb=1&ipt=a2da82c15e128613866c1a3c915861215fa8032685bf61c12fe0b0a044369bfe&ipo=images",
+//       },
+//     ],
+//   },
+//   {
+//     uuid:"abc3",
+//     title: "Study in Olin1",
+//     description: "Come study with us in Olin Library!",
+//     likes: 0,
+//   },
+//   {
+//     uuid:"abc4",
+//     title: "Study in Olin2",
+//     description: "Come study with us in Olin Library!",
+//     likes: 0,
+//   },
+//   {
+//     uuid:"abc5",
+//     title: "Study in Olin3",
+//     description: "Come study with us in Olin Library!",
+//     likes: 0,
+//   },
+//   {
+//     uuid:"abc6",
+//     title: "Study in Olin4",
+//     description: "Come study with us in Olin Library!",
+//     likes: 0,
+//   },
+// ];
 
 export default async function Index() {
   const supabase = createServerComponentClient({ cookies });
@@ -103,6 +110,25 @@ export default async function Index() {
       .eq("id", organizationIds[i]);
     organizationData.push(o?.data?.[0]);
   }
+
+  const getData: () => Promise<any> = async () => {
+    return getAllFromDB(supabase, "events")
+      .then(async d => {
+        return Promise.all(d.map(async (event: {attendees: string[]}) => {
+          const parsed = await Promise.all(event.attendees.map((x: string)=>getOneFromDB(supabase, "profiles", x)));
+
+          console.log(parsed.length);
+
+          event.attendees = parsed;
+
+          return event;
+        }));
+      });
+  }
+
+  const data = await getData();
+
+  // console.log(data[0].attendees);
 
   return (
     <>
@@ -254,8 +280,13 @@ export default async function Index() {
       </aside>
 
       <div className="sm:ml-64 pt-6">
-        <div className="grid grid-cols-3 gap-4">
+        {/* <div className="grid grid-cols-3 gap-4">
           {sampleEvents.map((e) => (
+            <EventCard {...e} />
+          ))}
+        </div> */}
+        <div className="grid grid-cols-3 gap-4">
+          {data.map((e:EventCardProps) => (
             <EventCard {...e} />
           ))}
         </div>

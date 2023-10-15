@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { BasicOrg, BasicUser, SVGList } from "../types";
 import {
   Card,
@@ -32,10 +32,11 @@ export interface TagProps {
 }
 
 export interface EventCardProps {
+    uuid: string,
   title: string;
   organizer: BasicUser;
-  description: string;
   likes: number;
+  description?: string;
   thumb?: string;
   organization?: BasicOrg;
   tags?: TagProps[];
@@ -43,7 +44,7 @@ export interface EventCardProps {
 }
 
 export interface ButtonProps<T> {
-  callback: (pressed: boolean) => T;
+  callback?: (pressed: boolean) => T;
 }
 
 const Tag: React.FunctionComponent<TagProps> = (props) => (
@@ -55,31 +56,50 @@ const Tag: React.FunctionComponent<TagProps> = (props) => (
   </div>
 );
 
-// function Button<T>(props: ButtonProps<T>) {
-//   const [pressed, setPressed] = useState(false);
+function CustomButton<T>(props: ButtonProps<T>) {
+  const [pressed, setPressed] = useState(false);
 
-//   const onPress = () => {
-//     setPressed(!pressed);
-//     //props.callback(!pressed);
-//   };
+  const onPress = () => {
+    setPressed(!pressed);
+    //props.callback(!pressed);
+  };
 
-//   return (
-//     <div
-//       className={`flex items-center justify-center space-x-2 rounded-lg p-2
-//             border border-solid cursor-pointer
-//             ${
-//               pressed
-//                 ? `text-[#ffffff] bg-accent-500 hover:bg-none hover:text-accent-500 hover:border-accent-500`
-//                 : `text-neutral-400 border-neutral-400 hover:bg-accent-500 hover:text-[#fff] hover:border-accent-500 hover:shadow-md duration-300`
-//             }`}
-//     >
-//       <BsHearts onClick={onPress} />
-//       <span className="text-sm">I'm interested!</span>
-//     </div>
-//   );
-// }
+  return (
+    <div
+      className={`flex items-center justify-center space-x-2 rounded-lg p-2
+            border border-solid cursor-pointer
+            ${
+              pressed
+                ? `text-[#ffffff] bg-accent-500 hover:bg-none hover:text-accent-500 hover:border-accent-500`
+                : `text-neutral-400 border-neutral-400 hover:bg-accent-500 hover:text-[#fff] hover:border-accent-500 hover:shadow-md duration-300`
+            }`}
+    >
+      {/* <BsHearts onClick={onPress} /> */}
+      <span className="text-sm">Read More</span>
+    </div>
+  );
+}
 
 const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
+    var initialHeight: number | undefined = 0;
+
+    const [expanded, setExpanded] = useState(false);
+    const [spanNum, setSpanNum] = useState(1);
+
+    const descriptionRef = useCallback((node: HTMLDivElement) => {
+        if (props.description?.length! > 200) {
+            if (expanded) {
+                console.log(node.clientHeight!/initialHeight!);
+                setSpanNum(Math.ceil(node.clientHeight!/initialHeight!));
+            }
+            else {
+                initialHeight = expanded ? initialHeight : node.clientHeight;
+                console.log(initialHeight);
+            }
+            
+        }
+    }, []);
+
   const likePost = (liked: boolean) => {
     postAPI("/like-event", { id: "", value: liked });
   };
@@ -92,10 +112,27 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
     console.log(e);
   };
 
+  const handleCardPress = () => {
+    if (props.description?.length! > 200)
+        setExpanded(!expanded);
+  }
+
+//   useEffect(() => {
+//       console.log("hello");
+//       if (props.description.length > 200) {
+//         console.log(Math.ceil(descriptionRef.current?.clientHeight!/initialHeight!));
+//         setSpanNum();
+//       }
+//   }, [spanNum]);
+
   return (
-    <Card className="cursor-pointer duration-300 hover:-translate-y-[7px]">
+    <Card 
+        key={props.uuid}
+        className={`cursor-pointer duration-300 hover:-translate-y-[7px] ${expanded ? `row-span-2` : ""}`}
+        onClick={handleCardPress}
+    >
       <CardHeader className="space-y-0.5">
-        <div className="flex content-between space-x-4">
+        <div className="flex justify-between">
           <div className="flex flex-col">
             <CardTitle className="text-lg font-bold">{props.title}</CardTitle>
             <p className="text-sm text-neutral-600">
@@ -105,17 +142,19 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
           <div className="flex mb-5 -space-x-6">
             {props.attendees
               ?.filter((_, i) => i < 3)
-              .map((a) => (
+              .map((a) => { 
+                  console.log(a);
+                return(
                 <img
                   className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
-                  src={a.avatar}
+                  src={a.avatar_url}
                   alt=""
                 />
-              ))}
+              )})}
             {props.attendees && props.attendees.length > 3 && (
-              <div className="w-10 h-10 border-2 border-white bg-white rounded-full align-middle">
-                <p>+{props.attendees.length - 3}</p>
-              </div>
+                <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800" href="#">
+                    +{props.attendees.length - 3}
+                </a>
             )}
           </div>
         </div>
@@ -123,7 +162,9 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
       {/* <div className="h-[0.05rem] bg-neutral-300" /> */}
       <CardContent>
         <>
-          <p className="text-sm text-muted-foreground">{props.description}</p>
+          <p ref={descriptionRef} className="text-sm text-muted-foreground">
+              {props.description?.length! > 200 && !expanded ? props.description?.slice(0, 200) + "..." : props.description}
+            </p>
           {props.tags?.map((t) => {
             <Tag {...t} />;
           })}
@@ -141,6 +182,7 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
           <Button size="icon" variant="outline" onClick={() => handleJoin}>
             <BsPlusLg size={20} className="text-primary-500" />
           </Button>
+          {/* <CustomButton/> */}
         </div>
       </CardFooter>
     </Card>
