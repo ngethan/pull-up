@@ -31,8 +31,10 @@ def update_user_in_supabase(supabase, user_id, updated_data):
         print(f"Successfully updated user {user_id}")
         return True
 
-# Placeholder function for Drew's ML logic
+# Placeholder function for Drew's ML logic--------------------------------------------------------------------
 def compute_event_score(user_row, event_row):
+
+    model= LinearRegression()
     import random
     return random.random()
 
