@@ -9,15 +9,17 @@ import {
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { DialogFooter, DialogHeader } from "./ui/dialog";
+  DialogFooter,
+  DialogHeader,
+} from "./ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { ChevronDownIcon } from "lucide-react";
+import { Form, FormItem } from "./ui/form";
 
 import { useForm } from "react-hook-form";
+import Datetime from "react-datetime";
+import "@/components/ui/react-datetime.css";
 
 const PostButton = () => {
   const form = useForm();
@@ -25,12 +27,12 @@ const PostButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="text-white">
+        <Button className="text-white w-full mb-[10px]">
           <BsPlusLg className="mr-1" />
           Post Up
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-neutral-100">
         <DialogHeader>
           <DialogTitle>Post Up!</DialogTitle>
           <DialogDescription>
@@ -51,6 +53,7 @@ const PostButton = () => {
                 <Input
                   id="title"
                   defaultValue=""
+                  placeholder="Movie night in Olin!"
                   className="col-span-3"
                 />
               </FormItem>
@@ -60,9 +63,32 @@ const PostButton = () => {
                 </Label>
                 <Textarea
                   id="description"
-                  placeholder="Describe your event!"
+                  placeholder="We're watching the shining tonight! Bring snacks :)"
                   defaultValue=""
                   className="col-span-3"
+                />
+              </FormItem>
+              <FormItem className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="start-time" className="text-right">
+                  Start Time
+                </Label>
+                <Datetime className="w-full" initialValue={new Date()} />
+              </FormItem>
+              <FormItem className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="end-time" className="text-right">
+                  End Time
+                </Label>
+                <Datetime
+                  className="w-full"
+                  initialValue={
+                    new Date(
+                      new Date().getFullYear(),
+                      new Date().getMonth(),
+                      new Date().getDay(),
+                      new Date().getHours() + 1,
+                      new Date().getMinutes(),
+                    )
+                  }
                 />
               </FormItem>
             </div>
