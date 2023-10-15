@@ -1,45 +1,82 @@
 # Import necessary libraries
 import pandas as pd
-from pycaret.regression import *
+from sklearn.linear_model import LinearRegression
 from supabase_py import create_client, Client
+from collections import defaultdict
+from multiprocessing import Pool
 
 # Initialize Supabase client
-supabase_url: str = "https://obolytrplcssvybfsjxq.supabase.co/"
-supabase_key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ib2x5dHJwbGNzc3Z5YmZzanhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTcyOTY4MDksImV4cCI6MjAxMjg3MjgwOX0.SY0V5seRlIW-zTddSW6L62411RXgD_eziJ8K1CBfehM"
-supabase: Client = create_client(supabase_url, supabase_key)
+supabase_url = "https://kngkkgipbghzkzrmoawb.supabase.co/"
+supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuZ2trZ2lwYmdoemt6cm1vYXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTczMTgxMzcsImV4cCI6MjAxMjg5NDEzN30.2nfCbx_C2UsoiGUFpNrfCjf1E3zWsOyZVYw1U2Nr-O8"  # Replace with your actual key
+supabase = create_client(supabase_url, supabase_key)
 
-# Fetch the data from your Supabase table
-table_name = "your_table_name"
-rows = supabase.table(table_name).select("*").execute()
-data = pd.DataFrame(rows['data'])
+# Fetch and convert table to DataFrame
+def fetch_and_convert_to_dataframe(supabase, table_name):
+    rows = supabase.table(table_name).select("*").execute()
+    print(f"Debug: Fetched data: {rows}")
+    if rows['data']:
+        print(f"Data fetched from {table_name}")
+        return pd.DataFrame(rows['data'])
+    else:
+        print(f"No data in {table_name} or table doesn't exist.")
+        return None
 
-# Initialize PyCaret setup
-# Target variable is 'event_score' - replace if you use a different name
-reg = setup(data, target='event_score', session_id=123)
+# Update user data in Supabase
+def update_user_in_supabase(supabase, user_id, updated_data):
+    response = supabase.table('profiles').update(updated_data, ['id']).eq('id', user_id).execute()
+    if 'error' in response:
+        print(f"Failed to update user {user_id}. Error: {response['error']}")
+        return False
+    else:
+        print(f"Successfully updated user {user_id}")
+        return True
 
-# Compare models to find the best one
-top3 = compare_models(n_select=3)
+# Placeholder function for Drew's ML logic
+def compute_event_score(user_row, event_row):
+    import random
+    return random.random()
 
-# Create the best model
-best_model = create_model('lr')
+# Compute score for user-event pair
+def compute_score_for_user_event_pair(user_row, event_row):
+    user_id = user_row['id']
+    event_id = event_row['id']
+    score = compute_event_score(user_row, event_row)
+    return user_id, event_id, score
 
-# Tune the model for better performance
-tuned_model = tune_model(best_model)
+def rank_events_for_users(data_profiles, data_events):
+    if data_profiles is None or data_events is None:
+        print("One of the dataframes is None. Exiting.")
+        return None
+    
+    if data_profiles.empty or data_events.empty:
+        print("One of the dataframes is empty. Exiting.")
+        return None
 
-# Evaluate the model
-evaluate_model(tuned_model)
+    user_event_scores = defaultdict(dict)
+    pool = Pool()
+    user_event_pairs = [(user_row, event_row) for _, user_row in data_profiles.iterrows() for _, event_row in data_events.iterrows()]
+    scores = pool.starmap(compute_score_for_user_event_pair, user_event_pairs)
 
-# Finalize the model for deployment
-final_model = finalize_model(tuned_model)
+    for user_id, event_id, score in scores:
+        user_event_scores[user_id][event_id] = score
 
-# Save the model
-save_model(final_model, 'final_model')
+    pool.close()
+    pool.join()
 
-# Predict the event score for the original data or new data
-predictions = predict_model(final_model, data=data)
+    # Example: Update user in Supabase based on the calculated score
+    for user_id in user_event_scores.keys():
+        top_event_id = max(user_event_scores[user_id], key=user_event_scores[user_id].get)
+        update_user_in_supabase(supabase, user_id, {'top_event_id': top_event_id})
+    
+    return user_event_scores
 
-# Add predictions to your DataFrame
-data['Predicted_Score'] = predictions['Label']
+# Fetch data
+data_events = fetch_and_convert_to_dataframe(supabase, "events")
+data_profiles = fetch_and_convert_to_dataframe(supabase, "profiles")
 
-# Update the Supabase table with the predicted scores
-supabase.table(table_name).upsert(data.to_dict(orient="records")).execute()
+# Rank events for users
+if data_events is not None and data_profiles is not None:
+    user_event_scores = rank_events_for_users(data_profiles, data_events)
+    # Do something with user_event_scores
+else:
+    print("Data fetch failed. Please check your Supabase tables.")

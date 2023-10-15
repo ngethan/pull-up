@@ -1,9 +1,9 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+"use server";
 
-const supabase = createServerComponentClient({ cookies });
+import { SupabaseClient } from "@supabase/auth-helpers-nextjs";
 
-export const postToDB = (dest: string, body: any) => {
+export const postToDB = (supabase: SupabaseClient<any, "public", any>, dest: string, body: any) => {
+    "use server";
     return new Promise(async (resolve, reject) => {
         const { error } = await supabase.from(dest).insert(body);
         if (error)
@@ -12,7 +12,8 @@ export const postToDB = (dest: string, body: any) => {
     });
 }
 
-export const updateDB = (dest: string, id: number, body: any) => {
+export const updateDB = (supabase: SupabaseClient<any, "public", any>, dest: string, id: number, body: any) => {
+    "use server";
     return new Promise(async (resolve, reject) => {
         const { data, error } = await supabase.from(dest).update(body).eq('id', id).select();
         if (error)
@@ -21,16 +22,19 @@ export const updateDB = (dest: string, id: number, body: any) => {
     });
 }
 
-export const getAllFromDB = (dest: string) => {
+export const getAllFromDB = (supabase: SupabaseClient<any, "public", any>, dest: string) => {
+    "use server";
     return new Promise(async (resolve, reject) => {
         const { data, error } = await supabase.from(dest).select();
         if (error)
             reject(error);
+        console.log(data);
         resolve(data);
     });
 }
 
-export const getColFromDB = (dest: string, col: string) => {
+export const getColFromDB = (supabase: SupabaseClient<any, "public", any>, dest: string, col: string) => {
+    "use server";
     return new Promise(async (resolve, reject) => {
         const { data, error } = await supabase.from(dest).select(col);
         if (error)
@@ -39,7 +43,8 @@ export const getColFromDB = (dest: string, col: string) => {
     });
 }
 
-export const getOneFromDB = (dest: string, id: number) => {
+export const getOneFromDB = (supabase: SupabaseClient<any, "public", any>, dest: string, id: number) => {
+    "use server";
     return new Promise(async (resolve, reject) => {
         const { data, error } = await supabase.from(dest).select().eq('id', id);
         if (error)
@@ -48,7 +53,8 @@ export const getOneFromDB = (dest: string, id: number) => {
     });
 }
 
-export const deleteOneFromDB = (dest: string, id: number) => {
+export const deleteOneFromDB = (supabase: SupabaseClient<any, "public", any>, dest: string, id: number) => {
+    "use server";
     return new Promise(async (resolve, reject) => {
         const { data, error } = await supabase.from(dest).delete().eq('id', id);
         if (error)
