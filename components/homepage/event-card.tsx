@@ -15,6 +15,7 @@ import {
   BsFillArrowUpSquareFill,
   BsFillSuitHeartFill,
   BsHeart,
+  BsHeartFill,
   BsHearts,
   BsPlusLg,
   BsTrash,
@@ -26,6 +27,8 @@ import { FaPlus } from "react-icons/fa";
 import { Form } from "../ui/form";
 import { BiEditAlt } from "react-icons/bi";
 import { MdOutlineDriveFileMove } from 'react-icons/md';
+import { createServerComponentClient, SupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 export interface TagProps {
     id: string;
   title: string;
@@ -53,6 +56,7 @@ export interface EventCardProps {
 
 export interface ButtonProps<T> {
     children: ReactNode;
+    alt?: ReactNode;
     toggleable?: boolean;
     className?: string;
   callback?: (pressed: boolean) => T;
@@ -87,7 +91,8 @@ function CustomButton<T>(props: ButtonProps<T>) {
                 : `text-primary-500 border-neutral-200 hover:bg-primary-500 hover:text-[#fff] hover:border-primary-500 hover:shadow-md duration-300`
             } ${props.className}`}
     >
-        {props.children}
+        { !pressed && props.children}
+        { pressed && props.alt }
       {/* <BsHearts  /> */}
       {/* <span className="text-sm">Read More</span> */}
     </a>
@@ -115,8 +120,8 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
         }
     }, []);
 
-  const handleInterested = (e: Event) => {
-    console.log(e);
+  const handleInterested = (pressed: boolean) => {
+    // props.supabase.from("events").update({ liked: pressed }).eq('id', props.id);
   };
 
   const handleJoin = (e: Event) => {
@@ -212,7 +217,9 @@ const EventCard: React.FunctionComponent<EventCardProps> = (props) => {
                 <p className="text-sm" >{created_at.toLocaleTimeString()}</p>
                 <div className="flex space-x-2">
                     <CustomButton
-                        callback={() => handleInterested}
+                        toggleable
+                        alt={(<BsHeartFill size={20} />)}
+                        callback={handleInterested}
                     >
                         <BsHeart size={20} />
                     </CustomButton>

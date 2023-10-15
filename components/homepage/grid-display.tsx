@@ -1,5 +1,6 @@
 "use client";
 
+import { SupabaseClient } from "@supabase/supabase-js";
 import { Tag } from "lucide-react";
 import React, { useState } from "react";
 import PostButton from "../PostButton";
